@@ -1,0 +1,76 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<div class="container-fluid">
+	  <a class="navbar-brand" href="/home">Leave Management System</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav mr-auto justify-content-center">
+		  <li class="nav-item dropdown" th:if="${session.role == 'Manager' || session.role == 'Employee'}">
+		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Leaves</a>
+		    <div class="dropdown-menu">
+		      <a class="dropdown-item" href="/leaves/create">Apply Leave</a>
+		      <div class="dropdown-divider"></div>
+		      <a class="dropdown-item" href="/leaves/view">View Personal Leave History</a>
+		    </div>
+		  </li>
+		  <li class="nav-item dropdown" th:if="${session.role == 'Manager' || session.role == 'Employee'}">
+		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">My Claims</a>
+		    <div class="dropdown-menu">
+		      <a class="dropdown-item" href="/compensation/create">Claim Compensation</a>
+		      <div class="dropdown-divider"></div>
+		      <a class="dropdown-item" href="/compensation/view">View Compensation History</a>
+		    </div>
+		  </li>
+		  <li class="nav-item dropdown" th:if="${session.role == 'Manager'}">
+		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Subordinates' Leave</a>
+		    <div class="dropdown-menu">
+		      <a class="dropdown-item" href="/leaves/viewLeaveForApproval">View Leave Application for Approval</a>
+		      <div class="dropdown-divider"></div>
+		      <a class="dropdown-item" href="/leaves/viewSubLeaves">Subordinate Leave History</a>
+		      <div class="dropdown-divider"></div>
+		      <a class="dropdown-item" href="/report/searchLeavePeriod">Search Leaves in Selected Period (Print Report)</a>
+		    </div>
+		  </li>
+		  <li class="nav-item dropdown" th:if="${session.role == 'Manager'}">
+		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Subordinates' Claims</a>
+		    <div class="dropdown-menu">
+		      <a class="dropdown-item" href="/compensation/viewClaimsForApproval">View Claims For Approval</a>
+		      <div class="dropdown-divider"></div>
+		      <a class="dropdown-item" href="/report/searchClaims">Search Claims (Print Report)</a>
+		    </div>
+		  </li>
+	     <li class="nav-item dropdown" th:if="${session.role == 'Admin'}">
+		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manage Users</a>
+		    <div class="dropdown-menu">
+		      <a class="dropdown-item" href="/users/create">Create User</a>
+		      <div class="dropdown-divider"></div>
+		      <a class="dropdown-item" href="/users/search">Edit/Delete User</a>
+		    </div>
+		  </li>
+		  <li class="nav-item dropdown" th:if="${session.role == 'Admin'}">
+		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manage Public Holidays</a>
+		    <div class="dropdown-menu">
+		      <a class="dropdown-item" href="/ph/create">Create Public Holiday</a>
+		      <div class="dropdown-divider"></div>
+		      <a class="dropdown-item" href="/ph/view">Edit/Delete Public Holidays</a>
+		    </div>
+		  </li>
+		  <li class="nav-item dropdown" th:if="${session.role == 'Admin'}">
+		    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manage Leave Quotas</a>
+		    <div class="dropdown-menu">
+		      <a class="dropdown-item" href="/leaveQuota/create">Create Leave Quota</a>
+		      <div class="dropdown-divider"></div>
+		      <a class="dropdown-item" href="/leaveQuota/view">Edit/Delete Leave Quota</a>
+		    </div>
+		  </li>
+	       <li class="nav-item active">
+	        <a class="nav-link" href="/leaves/movementRegister">Movement Register</a>
+	      </li>
+	      <li class="nav-item active">
+	        <a class="nav-link" href="/logout">Logout</a>
+	      </li>
+	    </ul>
+	  </div>
+  </div>
+</nav>

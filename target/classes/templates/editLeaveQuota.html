@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+		<title>
+			Edit leave quota
+		</title>
+	</head>
+	<body>
+		<div class="container mt-5">
+			<div>
+				<h2>Edit Leave Quota</h2>
+			</div>
+			
+			<form th:action="@{/leaveQuota/save}" method="post" th:object="${leaveQuota}" class="mt-4">
+				<div class="form-group row">
+					<label for="type" class="col-sm-2 col-form-label">Role:</label>
+					<div class="col-sm-10">
+						<input type="text" name="role" class="form-control" th:field="*{role}" readonly/>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="year" class="col-sm-2 col-form-label">Year:</label>
+					<div class="col-sm-10">
+						<input type="text" name="year" class="form-control" th:field="*{year}" readonly/>
+						<input type="text" name="id" class="form-control" th:field="*{id}" hidden/>
+						<span th:if="${#fields.hasErrors('year')}" th:errors="*{year}" class="text-danger"></span>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="annualLeaveQuota" class="col-sm-2 col-form-label">Annual Leave Quota:</label>
+					<div class="col-sm-10">
+						<input type="number" min="0" name="annualLeaveQuota" class="form-control" th:field="*{annualLeaveQuota}"/>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="medicalLeaveQuota" class="col-sm-2 col-form-label">Medical Leave Quota:</label>
+					<div class="col-sm-10">
+						<input type="number" min="0" name="medicalLeaveQuota" class="form-control" th:field="*{medicalLeaveQuota}"/>
+					</div>
+				</div>
+				<label for="submit" class="col-sm-2 col-form-label"></label>
+				<button type="submit" name="submit" class="btn btn-primary">Save</button>
+			</form>
+		</div>
+	</body>
+</html>

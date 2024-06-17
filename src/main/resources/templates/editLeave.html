@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+		<title>
+			Edit leave
+		</title>
+	</head>
+	<body>
+		<div class="container mt-5">
+			<div>
+				<h2>Edit Leave</h2>
+			</div>
+			
+			<div class="form-group row">
+				<label for="leaveBalances" class="col-sm-2 col-form-label">Current leave balance: </label>
+				<div class="col-sm-10" >
+					<span th:text="${session.leaveBal + ' days'}" class="form-control-plaintext"></span>
+				</div>
+			</div>
+			
+			<form th:action="@{/leaves/save}" method="post" th:object="${leave}" class="mt-4">
+				<div class="form-group row">
+					<label for="type" class="col-sm-2 col-form-label">Leave Type:</label>
+					<div class="col-sm-10">
+						<input type="text" th:field="*{type}" name="type" class="form-control" id="type" readonly></input>
+						<input type="text" th:field="*{id}" id="id" hidden></input>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="daterange" class="col-sm-2 col-form-label">Leave period:</label>
+					<div class="col-sm-10">
+						<input type="text" name="daterange" class="form-control" autocomplete="off"/>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-sm-10 offset-sm-2" id="halfDay">
+						<input type="checkbox" name="halfDay" id="checkbox" th:checked="${leave.duration % 1 != 0}"/>
+						<label for="halfDay" >Half day</label>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="duration" class="col-sm-2 col-form-label">Duration of Leave:</label>
+					<div class="col-sm-10">
+						<input type="number" th:field="*{duration}" id="duration" name="duration" readonly class="form-control">
+						<span style="color: red;" id="durationMessage"></span>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="reason" class="col-sm-2 col-form-label">Reason:</label>
+					<div class="col-sm-10">
+						<textarea rows="3" cols="25" th:field="*{reason}" name="reason" class="form-control"></textarea>
+						<span th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}" class="text-danger"></span>
+					</div>
+				</div>
+
+				<div class="form-group row" >
+					<label for="workDissemination" class="col-sm-2 col-form-label">Work Dissemination (if any):</label>
+					<div class="col-sm-10">
+						<input type="text" name="workDissemination" class="form-control" th:field="*{workDissemination}">
+					</div>
+				</div>
+
+				<div class="form-group row" id="contact">
+					<label for="contact" class="col-sm-2 col-form-label">Contact Details (if overseas):</label>
+					<div class="col-sm-10">
+						<input type="text" name="contact" class="form-control" th:field="*{contact}">
+					</div>
+				</div>
+				<label for="submit" class="col-sm-2 col-form-label"></label>
+				<button type="submit" name="submit" class="btn btn-primary">Save</button>
+				<button type="button" class="btn btn-primary" onclick="promptDelete()">Delete</button>
+			</form>
+			<br />
+			</div>
+			<table style="width:50%; margin-left: auto; margin-right: auto; border: white;">
+				<tr>
+					<td style="text-align: center; font-weight: bold;"><a href="#" onclick="history.go(-1); return false;">Back</a></td>
+				</tr>
+			</table>
+			
+			<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+			<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+			<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+			<script th:inline="javascript">
+				var numberOfDays = (/*[[${leave.duration}]]*/'');
+				var publicHolidays = /*[[${publicHolidays}]]*/ '';
+				var PHDates = publicHolidays.map(function(holiday) {
+					return holiday.date;
+				});
+				const durationElement = document.getElementById("duration");
+				var startDateString = '[[${startDate}]]';
+				var startDateFormat = moment(/*[[${leave.startDate}]]*/);
+				var endDateFormat = moment(/*[[${leave.endDate}]]*/);
+				
+				$(function() {
+					$('input[name="daterange"]').daterangepicker({
+						autoApply: true,
+						startDate: startDateFormat,
+						endDate: endDateFormat,
+				    	opens: "center",
+				    	isInvalidDate: function(date){
+							currDate = moment(date).format('YYYY-MM-DD')
+							if (date.day() == 0 || date.day() == 6 || (PHDates.indexOf(currDate) != -1)) {
+								return true;
+							} 
+							else {
+								return false;
+							}
+						},
+						locale: {
+							format: 'DD/MM/YYYY',
+						}
+					},
+					function(start, end, label) {
+						//Set the values for the startDate and endDate input for model binding later
+					    var startDate = $('#startDate');
+						var endDate = $('#endDate');
+						startDate.val(start.format('YYYY-MM-DD'));
+						endDate.val(end.format('YYYY-MM-DD'));
+						numberOfDays = end.diff(start, 'days') + 1; // Add 1 to include both start and end dates
+						console.log("Number of days selected: " + numberOfDays);
+						
+						//If leave period <= 14 calendar days, exclude weekends and public holidays. Otherwise, include
+						if (numberOfDays > 14){
+							durationElement = document.getElementById("duration");
+							durationElement.value = numberOfDays;
+						}
+						else{
+							numberOfDays = 0.0;
+							var currentDate = moment(start);
+							//Use while loop to count number of valid dates of selected dates
+							while (currentDate.isSameOrBefore(end, 'day')) {
+								var currDateStr = currentDate.format('DD/MM/YYYY');
+								if (!(currentDate.day() == 0 || currentDate.day() == 6 || (isPublicHoliday(currDateStr, PHDates)))) {
+									numberOfDays++;
+								}
+								currentDate.add(1, 'day');
+							}
+							durationElement.value = numberOfDays.toFixed(1);
+						}
+						checkLeaveBal();
+			  		});
+				});
+				const typeElement = document.getElementById("type");
+				const halfDayDiv = document.getElementById("halfDay");
+				const contactElement = document.getElementById("contact");
+				const checkboxElement = document.getElementById("checkbox");
+				
+				document.addEventListener('DOMContentLoaded', function() {
+					if (typeElement.value != "Compensation"){
+						halfDayDiv.style.display = 'none';
+					}
+					else{
+						halfDayDiv.style.display = 'block';
+					}
+					
+				})	
+				
+				
+				checkboxElement.addEventListener("change", function(){
+					if (checkboxElement.checked){
+						console.log("check box is checked");
+						
+						durationElement.value = numberOfDays.toFixed(1);
+					}
+					else{
+						console.log("check box is UNchecked");
+						var currentDuration = parseFloat(durationElement.value);
+						durationElement.value = (currentDuration + 0.5).toFixed(1);
+					}
+				});
+				
+				function checkLeaveBal(){
+					console.log("on change triggerred");
+					var duration = parseFloat(document.getElementById("duration").value);
+					var durationMessageElement = document.getElementById("durationMessage");
+					var leaveBal = /*[[${session.leaveBal}]]*/ '';
+				  	console.log("leaveBal in javascript: " + leaveBal);
+					if (duration > leaveBal){
+						durationMessageElement.innerHTML = "Duration exceeds leave balance.";
+					}
+					else{
+						durationMessageElement.innerHTML = "";
+					}
+				}
+				
+				function promptDelete(){
+					if (window.confirm("Comfirm deletion?")){
+						window.location = "/leaves/delete/"+$("#id").val();
+					}
+				}
+				
+				function isPublicHoliday(dateStr, publicHolidays) {
+					// Convert dateStr to LocalDate format for comparison
+					var currentDate = moment(dateStr, 'DD/MM/YYYY').toObject();
+					var formattedDate = moment(currentDate).format('YYYY-MM-DD');
+				    
+				    // Check if the formattedDate is in the publicHolidays array
+					return publicHolidays.includes(formattedDate);
+				}
+				
+		</script>
+	</body>
+</html>

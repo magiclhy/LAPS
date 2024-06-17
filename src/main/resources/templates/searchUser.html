@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Search Employees</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	</head>
+	<body>
+		<div class="container mt-5">
+			<div>
+				<h2>Search Employees</h2>
+			</div>
+			<br />
+			<div>
+				<form th:action="@{/users/search}" method="post">
+					<div class="form-group row">
+						<label for="searchBy" class="col-sm-2 col-form-label">Search By:</label>
+						<div class="col-sm-10">
+							<select name="searchBy" class="form-control" id="searchBy">
+								<option value="name">Name</option>
+								<option value="type">Role</option>
+							</select>
+						</div>
+					</div>
+					
+					<div id="nameDiv">
+						<div class="form-group row">
+							<label for="keyword" class="col-sm-2 col-form-label">Name:</label>
+							<div class="col-sm-10">
+								<input type="text" name="keyword" class="form-control" placeholder="Enter Name">
+							</div>
+						</div>
+					</div>
+					
+					<div id="typeDiv">
+						<div class="form-group row">
+							<label for="type" class="col-sm-2 col-form-label">Role:</label>
+							<div class="col-sm-10">
+								<select name="type" class="form-control">
+									<option value="Employee">Employee</option>
+									<option value="Manager">Manager</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					
+					<label for="submit" class="col-sm-2 col-form-label"></label>
+					<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+				</form>
+			</div>
+			<table style="width:50%; margin-left: auto; margin-right: auto; border: white;">
+				<tr>
+					<td style="text-align: center; font-weight: bold;"><a href="#" onclick="history.go(-1); return false;">Back</a></td>
+				</tr>
+			</table>
+		</div>
+		
+		<script th:inline="javascript">
+			const dropDownElement = document.getElementById("searchBy");
+			const nameDiv = document.getElementById("nameDiv");
+			const typeDiv = document.getElementById("typeDiv");
+			
+			$(document).ready(function () {
+				typeDiv.style.display = 'none';
+			});
+			
+			dropDownElement.addEventListener("change", function(){
+				if (dropDownElement.value === "name"){
+					nameDiv.style.display = 'block';
+					typeDiv.style.display = 'none';
+				}
+				else if (dropDownElement.value === "type"){
+					nameDiv.style.display = 'none';
+					typeDiv.style.display = 'block';
+				}
+			})
+
+		</script>
+	</body>
+</html>

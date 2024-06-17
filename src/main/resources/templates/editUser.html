@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+		<title>
+			Edit User
+		</title>
+	</head>
+	<body>
+		<div class="container mt-5">
+			<div>
+				<h2>Edit User</h2>
+			</div>
+			
+			<form th:action="@{/users/save}" method="post" th:object="${user}" class="mt-4" id="userForm">
+				<div class="form-group row">
+					<label for="type" class="col-sm-2 col-form-label">User Role:</label>
+					<div class="col-sm-10">
+						<select name="type" id="type" class="form-control" th:field="*{type}">
+							<option value="Employee">Employee</option>
+							<option value="Manager">Manager</option>
+							<option value="Admin">Admin</option>
+						</select>
+						<span id="messageRole" name="messageRole" style="color: grey;" class="col-sm-10"></span>
+						<input type="text" name="changeRole" id="changeRole" value="no" hidden/>
+						<input type="text" name="type" id="type2" th:field="*{type}" hidden disabled/>
+					</div>	
+				</div>
+
+				<div class="form-group row">
+					<label for="duration" class="col-sm-2 col-form-label">Name:</label>
+					<div class="col-sm-10">
+						<input type="text" th:field="*{name}" name="name" class="form-control" >
+						<input type="text" th:field="*{id}" name="id" hidden></input>
+					</div>
+				</div>
+				
+				<div id="manager">
+					<div class="form-group row">
+						<label for="manager" class="col-sm-2 col-form-label">Set Manager:</label>
+						<div class="col-sm-10">
+							<select name="manager" class="form-control">
+								<option value="" disabled selected>Select manager</option>
+								<option th:each="manager, iterStat:${managers}" 
+										th:value="${manager.id}" 
+										th:text="${manager.name}" 
+										th:selected="${manager.id == (user.manager != null ? user.manager.id : null)}" ></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				
+				<div id="employees">
+					<div class="form-group row">
+						<label for="employees" class="col-sm-2 col-form-label">Set Employees:</label>
+						<div class="col-sm-10">
+							<select name="employees" id="employeesField" class="form-control" multiple>
+								<option th:each="employee, iterStat:${allEmployees}" 
+										th:value="${employee.id}" 
+										th:text="${employee.name}"
+										th:selected="${employee.manager.id == user.id}"></option>
+							</select>
+							<span style="color: grey;" >Note: This will change employee's existing manager to current one.</span>
+						</div>
+						<label for="message" class="col-sm-2 col-form-label"></label>
+						<span id="message" name="message" style="color: red;" class="col-sm-10"></span>
+					</div>
+				</div>
+
+				<div class="form-group row" >
+					<label for="username" class="col-sm-2 col-form-label">Username:</label>
+					<div class="col-sm-10">
+						<input type="text" name="username" class="form-control" th:field="*{username}">
+					</div>
+				</div>
+
+				<div class="form-group row" id="contact">
+					<label for="password" class="col-sm-2 col-form-label">Password:</label>
+					<div class="col-sm-10">
+						<input type="text" name="password" class="form-control" th:field="*{password}" th:value="${user.password}">
+					</div>
+				</div>
+				<label for="submit" class="col-sm-2 col-form-label"></label>
+				<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+				<button type="button" class="btn btn-primary" onclick="promptDelete()">Delete</button>
+			</form>
+			<br />
+		</div>
+		<table style="width:50%; margin-left: auto; margin-right: auto; border: white;">
+			<tr>
+				<td style="text-align: center; font-weight: bold;"><a href="#" onclick="history.go(-1); return false;">Back</a></td>
+			</tr>
+		</table>
+		
+		<script th:inline="javascript">
+			const dropDownElement = document.getElementById("type");
+			const managerDiv = document.getElementById("manager");
+			const employeesDiv = document.getElementById("employees");
+			const employeesField = document.getElementById("employeesField");
+			const messageElement = document.getElementById("message");
+			const originalType = dropDownElement.value;
+			const changeRoleElement = document.getElementById("changeRole");
+			const messageRoleElement = document.getElementById("messageRole");
+			const type2Hidden = document.getElementById("type2");
+			
+			$(document).ready(function () {
+				if (dropDownElement.value === "Employee"){
+					employeesDiv.style.display = 'none';
+				}
+				else if (dropDownElement.value === "Manager"){
+					managerDiv.style.display = 'none';
+					//If have employees under manager, make user role disabled 
+					if (Array.from(employeesField.options).some(option => option.selected)){
+						messageRoleElement.innerHTML = "Please ensure Employees have been assigned to another manager before changing roles."
+						//Set a hidden input as still needed for binding if want to change name etc
+						type2Hidden.removeAttribute("disabled");
+						type2Hidden.value = dropDownElement.value;
+						console.log("type2Hidden.value = " + type2Hidden.value)
+						dropDownElement.setAttribute("disabled", "");	
+					}
+				}
+			});
+			
+			dropDownElement.addEventListener("change", function(){
+				if (dropDownElement.value === "Employee"){
+					managerDiv.style.display = 'block';
+					employeesDiv.style.display = 'none';
+				}
+				else if (dropDownElement.value === "Manager"){
+					managerDiv.style.display = 'none';
+					employeesDiv.style.display = 'block';
+				}
+				else if (dropDownElement.value === "Admin"){
+					managerDiv.style.display = 'none';
+					employeesDiv.style.display = 'none';
+				}
+				
+				//Check for any changes in the role
+				if (dropDownElement.value === originalType){
+					changeRoleElement.value = "no";
+				}
+				else{
+					changeRoleElement.value = "yes";
+				}
+				console.log("changeRole: " + changeRoleElement.value);
+				
+				//Check if changing from manager to employee, need to
+				//ensure that employees are assigned to another manager first
+				//to prevent Referential integrity constraint violation
+				
+			})
+			
+			function promptDelete(){
+				if (Array.from(employeesField.options).some(option => option.selected)){
+					messageElement.innerHTML = "Please assign employees to other manager before deletion.";
+				}
+				else{
+					if (window.confirm("Comfirm deletion?")){
+						window.location = "/users/delete/"+$("#id").val();
+					}
+				}
+			}
+
+
+		</script>
+	</body>
+</html>
