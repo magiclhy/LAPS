@@ -32,7 +32,7 @@
 					<label for="type" class="col-sm-2 col-form-label">Leave Type:</label>
 					<div class="col-sm-10">
 						<select name="type" th:field="*{type}" id="type" class="form-control">
-							<option th:each="type : ${T(sg.nus.iss.workshop.model.LeaveType).values()}" 
+							<option th:each="type : ${T(sg.nus.iss.java.model.LeaveType).values()}" 
 									th:value="${type}" th:text="${type}"></option>
 						</select>
 					</div>
@@ -106,10 +106,15 @@
 				const durationElement = document.getElementById("duration");
 				
 				$(function() {
-					var today = moment().format('DD/MM/YYYY');
+					var startDateStr = /*[[${startDate}]]*/ ""; 
+				    var endDateStr = /*[[${endDate}]]*/ "";
+				    
+				    var startDate = moment(startDateStr, 'YYYY-MM-DD');
+				    var endDate = moment(endDateStr, 'YYYY-MM-DD');
 					$('input[name="daterange"]').daterangepicker({
 						autoApply: true,
-						startDate: today,
+						startDate: startDate,
+						endDate: endDate,
 				    	opens: "center",
 				    	isInvalidDate: function(date){
 							currDate = moment(date).format('YYYY-MM-DD')
@@ -159,10 +164,16 @@
 				const checkboxElement = document.getElementById("checkbox");
 				
 				document.addEventListener('DOMContentLoaded', function() {
-					halfDayDiv.style.display = 'none';
+					checkType();
+					checkLeaveBal();
 				})	
 				
 				dropDownElement.addEventListener("change", function(){
+					checkType();
+					checkLeaveBal();
+				});
+				
+				function checkType(){
 					if (dropDownElement.value === "Compensation"){
 						halfDayDiv.style.display = 'block';
 					}
@@ -170,12 +181,12 @@
 						halfDayDiv.style.display = 'none';
 					}
 					if (dropDownElement.value === "Annual"){
-						contactElement.style.display = 'block';
+						contactElement.style.display = 'flex';
 					}
 					else{
 						contactElement.style.display = 'none';
 					}
-				});
+				}
 				
 				checkboxElement.addEventListener("change", function(){
 					if (checkboxElement.checked){
@@ -197,6 +208,7 @@
 					var duration = parseFloat(document.getElementById("duration").value);
 					var durationMessageElement = document.getElementById("durationMessage");
 					var leaveBal = 0;
+					var submitButton = document.querySelector('button[name="submit"]');
 					if (dropDownElement.value === "Annual"){
 						leaveBal = /*[[${session.annualLeaveBal}]]*/ '';
 					}
@@ -209,9 +221,11 @@
 				  	console.log("leaveBal in javascript: " + leaveBal);
 					if (duration > leaveBal){
 						durationMessageElement.innerHTML = "Duration exceeds " + dropDownElement.value +" leave balance.";
+						submitButton.disabled = true;
 					}
 					else{
 						durationMessageElement.innerHTML = "";
+						submitButton.disabled = false;
 					}
 				}
 				

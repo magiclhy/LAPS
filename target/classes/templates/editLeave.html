@@ -94,15 +94,17 @@
 					return holiday.date;
 				});
 				const durationElement = document.getElementById("duration");
-				var startDateString = '[[${startDate}]]';
-				var startDateFormat = moment(/*[[${leave.startDate}]]*/);
-				var endDateFormat = moment(/*[[${leave.endDate}]]*/);
+				var startDateStr = /*[[${startDate}]]*/ ""; 
+			    var endDateStr = /*[[${endDate}]]*/ "";
+			    
+			    var startDate = moment(startDateStr, 'YYYY-MM-DD');
+			    var endDate = moment(endDateStr, 'YYYY-MM-DD');
 				
 				$(function() {
 					$('input[name="daterange"]').daterangepicker({
 						autoApply: true,
-						startDate: startDateFormat,
-						endDate: endDateFormat,
+						startDate: startDate,
+						endDate: endDate,
 				    	opens: "center",
 				    	isInvalidDate: function(date){
 							currDate = moment(date).format('YYYY-MM-DD')
@@ -153,12 +155,7 @@
 				const checkboxElement = document.getElementById("checkbox");
 				
 				document.addEventListener('DOMContentLoaded', function() {
-					if (typeElement.value != "Compensation"){
-						halfDayDiv.style.display = 'none';
-					}
-					else{
-						halfDayDiv.style.display = 'block';
-					}
+					checkType();
 					
 				})	
 				
@@ -175,6 +172,21 @@
 						durationElement.value = (currentDuration + 0.5).toFixed(1);
 					}
 				});
+				
+				function checkType(){
+					if (typeElement.value === "Compensation"){
+						halfDayDiv.style.display = 'block';
+					}
+					else{
+						halfDayDiv.style.display = 'none';
+					}
+					if (typeElement.value === "Annual"){
+						contactElement.style.display = 'flex';
+					}
+					else{
+						contactElement.style.display = 'none';
+					}
+				}
 				
 				function checkLeaveBal(){
 					console.log("on change triggerred");

@@ -82,7 +82,7 @@ public class LeaveServiceImpl implements LeaveService{
 	@Override
 	public Page<Leave> findAllLeavesByPage(int id, int pageNo, int pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-		Page<Leave> leavePage = leaveRepository.findAllByUserId(id, pageRequest);
+		Page<Leave> leavePage = leaveRepository.findAllByUserIdInPages(id, pageRequest);
 		return leavePage;
 	}
 }

@@ -18,6 +18,15 @@
 					<label for="type" class="col-sm-2 col-form-label">Role:</label>
 					<div class="col-sm-10">
 						<input type="text" name="role" class="form-control" th:field="*{role}" readonly/>
+						<input type="text" id="id" th:field="*{id}" hidden/>
+						<input type="text" id="emp" th:field="*{employees[0].name}" hidden/>
+					</div>
+				</div>
+				
+				<div class="form-group row">
+					<label for="name" class="col-sm-2 col-form-label">Leave Quota Name:</label>
+					<div class="col-sm-10">
+						<input type="text" name="name" class="form-control" th:field="*{name}"/>
 					</div>
 				</div>
 				
@@ -25,7 +34,6 @@
 					<label for="year" class="col-sm-2 col-form-label">Year:</label>
 					<div class="col-sm-10">
 						<input type="text" name="year" class="form-control" th:field="*{year}" readonly/>
-						<input type="text" name="id" class="form-control" th:field="*{id}" hidden/>
 						<span th:if="${#fields.hasErrors('year')}" th:errors="*{year}" class="text-danger"></span>
 					</div>
 				</div>
@@ -45,7 +53,37 @@
 				</div>
 				<label for="submit" class="col-sm-2 col-form-label"></label>
 				<button type="submit" name="submit" class="btn btn-primary">Save</button>
+				<button type="button" name="delete" class="btn btn-primary" onclick="promptDelete()">Delete</button>
 			</form>
+			<br />
+			<table style="width:50%; margin-left: auto; margin-right: auto; border: white;">
+				<tr>
+					<td style="text-align: center; font-weight: bold;"><a href="#" onclick="history.go(-1); return false;">Back</a></td>
+				</tr>
+			</table>
 		</div>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				checkLeaveQuota();
+			})	
+			
+			function promptDelete() {
+			    var idVal = document.getElementById('id').value;
+			    if (window.confirm("Confirm deletion?")) {
+			        window.location = "/leaveQuota/delete/" + idVal;
+			    }
+			}
+			
+			function checkLeaveQuota(){
+			    var employees = document.getElementById('emp').value.trim();
+			    var deleteButton = document.querySelector('button[name="delete"]');
+
+			    if(employees === '') {
+			        deleteButton.disabled = false;
+			    } else {
+			        deleteButton.disabled = true;
+			    }
+			}
+		</script>
 	</body>
 </html>

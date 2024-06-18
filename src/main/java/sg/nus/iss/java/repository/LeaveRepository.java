@@ -14,7 +14,7 @@ import sg.nus.iss.java.model.Leave;
 public interface LeaveRepository extends JpaRepository <Leave, Integer>{
 	@Query("SELECT l FROM Leave l WHERE l.employee.id = :id "
 			+ "AND YEAR(startDate) = YEAR(CURDATE()) ORDER BY startDate")
-	Page<Leave> findAllByUserId(@Param("id") int id, Pageable pageable);
+	Page<Leave> findAllByUserIdInPages(@Param("id") int id, Pageable pageable);
 
 	@Query("SELECT l FROM Leave l " +
 			"JOIN l.employee e " + 
@@ -60,5 +60,4 @@ public interface LeaveRepository extends JpaRepository <Leave, Integer>{
 			+ "AND YEAR(startDate) = YEAR(CURDATE()) "
 			+ "ORDER BY l.startDate")
 	List<Leave> findAllLeavesNextMonth();
-
 }

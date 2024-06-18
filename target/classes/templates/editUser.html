@@ -37,7 +37,21 @@
 					</div>
 				</div>
 				
-				<div id="manager">
+				<div id="leaveQuotaEmp">
+					<div class="form-group row">
+						<label for="leaveQuotaEmp" class="col-sm-2 col-form-label">Set Leave Quota:</label>
+						<div class="col-sm-10">
+							<select name="leaveQuotaEmp" class="form-control">
+								<option value="" disabled selected>Select leave quota</option>
+								<option th:each="leaveQuota, iterStat:${leaveQuotasEmp}" 
+										th:value="${leaveQuota.id}" th:text="${leaveQuota.id}" 
+										th:selected="${leaveQuota.id == user.leaveQuota.name}"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				
+				<div id="manager" th:if="${user.type != 'Admin'}">
 					<div class="form-group row">
 						<label for="manager" class="col-sm-2 col-form-label">Set Manager:</label>
 						<div class="col-sm-10">
@@ -52,7 +66,21 @@
 					</div>
 				</div>
 				
-				<div id="employees">
+				<div id="leaveQuotaManager">
+					<div class="form-group row">
+						<label for="leaveQuotaManager" class="col-sm-2 col-form-label">Set Leave Quota:</label>
+						<div class="col-sm-10">
+							<select name="leaveQuotaManager" class="form-control">
+								<option value="" disabled selected>Select leave quota</option>
+								<option th:each="leaveQuota, iterStat:${leaveQuotasManager}" 
+										th:value="${leaveQuota.id}" th:text="${leaveQuota.id}" 
+										th:selected="${leaveQuota.id == user.leaveQuota.name}"></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				
+				<div id="employees" th:if="${user.type != 'Admin'}">
 					<div class="form-group row">
 						<label for="employees" class="col-sm-2 col-form-label">Set Employees:</label>
 						<div class="col-sm-10">
@@ -104,13 +132,17 @@
 			const changeRoleElement = document.getElementById("changeRole");
 			const messageRoleElement = document.getElementById("messageRole");
 			const type2Hidden = document.getElementById("type2");
+			const leaveQuotaManagerElement = document.getElementById("leaveQuotaManager")
+			const leaveQuotaEmpElement = document.getElementById("leaveQuotaEmp")
 			
 			$(document).ready(function () {
 				if (dropDownElement.value === "Employee"){
 					employeesDiv.style.display = 'none';
+					leaveQuotaManagerElement.style.display = 'none';
 				}
 				else if (dropDownElement.value === "Manager"){
 					managerDiv.style.display = 'none';
+					leaveQuotaEmpElement.style.display = 'none';
 					//If have employees under manager, make user role disabled 
 					if (Array.from(employeesField.options).some(option => option.selected)){
 						messageRoleElement.innerHTML = "Please ensure Employees have been assigned to another manager before changing roles."
@@ -127,14 +159,20 @@
 				if (dropDownElement.value === "Employee"){
 					managerDiv.style.display = 'block';
 					employeesDiv.style.display = 'none';
+					leaveQuotaEmpElement.style.display = 'block';
+					leaveQuotaManagerElement.style.display = 'none';
 				}
 				else if (dropDownElement.value === "Manager"){
 					managerDiv.style.display = 'none';
 					employeesDiv.style.display = 'block';
+					leaveQuotaEmpElement.style.display = 'none';
+					leaveQuotaManagerElement.style.display = 'block';
 				}
 				else if (dropDownElement.value === "Admin"){
 					managerDiv.style.display = 'none';
 					employeesDiv.style.display = 'none';
+					leaveQuotaEmpElement.style.display = 'none';
+					leaveQuotaManagerElement.style.display = 'none';
 				}
 				
 				//Check for any changes in the role

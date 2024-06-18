@@ -40,13 +40,16 @@
 		</div>
 		<br />
 		<div>
-			<span th:with="prevPage=${currentPage-1}">
-				<a name="previous" id="previous" th:href="@{'/leaves/viewSubLeaves?pageNo=' + ${prevPage} + '&pageSize=' + ${pageSize}}">Previous</a>
-			</span>&emsp;
-			<span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>&emsp;
-			<span th:with="nextPage=${currentPage+1}">
-				<a name="next" id="next" th:href="@{'/leaves/viewSubLeaves?pageNo=' + ${nextPage} + '&pageSize=' + ${pageSize}}">Next</a>
-			</span>
+		    <span>
+		        <a name="previous" id="previous" th:href="@{'/leaves/view?pageNo=' + ${currentPage - 1} + '&pageSize=' + ${pageSize}}">Previous</a>
+		    </span>&emsp;
+		    <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>&emsp;
+		    <span th:if="${currentPage < totalPages - 1}">
+		        <a name="next" id="next" th:href="@{'/leaves/view?pageNo=' + ${currentPage + 1} + '&pageSize=' + ${pageSize}}">Next</a>
+		    </span>
+			<span th:if="${currentPage >= totalPages - 1}" style="color: grey;">
+		        Next
+		    </span>
 		</div>
 		<div style="margin-left: auto; margin-right: auto;">
 			<label for="pageSize" class="col-form-label">Results per page:</label>

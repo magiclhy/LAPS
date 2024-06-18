@@ -17,6 +17,7 @@ public class LeaveQuota {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	private String name;
 	private int annualLeaveQuota;
 	private int medicalLeaveQuota;
 	@Column(name = "leave_year")
@@ -25,13 +26,14 @@ public class LeaveQuota {
 	private String role;
 	
 	@OneToMany(mappedBy = "leaveQuota")
-	@JsonIgnore
+	//@JsonIgnore
 	private List<Employee> employees;
 	
 	public LeaveQuota() {
 	}
 	
-	public LeaveQuota(String year, String role) {
+	public LeaveQuota(String name, String year, String role) {
+		this.name = name;
 		this.year = year;
 		this.role = role;
 	}
@@ -43,6 +45,14 @@ public class LeaveQuota {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public String getYear() {

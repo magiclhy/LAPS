@@ -25,7 +25,7 @@ public class Employee extends User{
 	private Manager manager;
 	
 	@ManyToOne
-	@JsonIgnore
+	//@JsonIgnore
 	private LeaveQuota leaveQuota;
 	
 	@OneToOne(mappedBy = "employee", cascade = CascadeType.ALL)

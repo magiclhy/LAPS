@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<title>
+			View Public Holiday
+		</title>
+	</head>
+	<body style="text-align: center;">
+		<div class="container mt-5">
+			<h2>Public Holidays</h2>
+	    	<br />
+	    	<p style="text-align: center;" th:if="${#lists.isEmpty(publicHolidays)}">No public holidays</p>
+			<table style="margin-left:auto; margin-right: auto; width:100%" class="table-hover" th:if="${not #lists.isEmpty(publicHolidays)}">
+				<thead>
+					<tr>
+						<th>Name: </th>
+						<th>Date:</th>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="holiday, iterStat:${publicHolidays}" style="text-align: center;">
+						<td th:text="${holiday.name}"></td>
+						<td th:text="${#temporals.format(holiday.date, 'dd-MM-yyyy')}"></td>
+						<td>
+							<a th:href="@{/ph/edit/}+${holiday.id}">Edit/Delete</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<div>
+			<table style="width:50%; margin-left: auto; margin-right: auto; border: white;">
+				<tr>
+					<td style="text-align: center; font-weight: bold;"><a href="/home" >Back To Home</a></td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

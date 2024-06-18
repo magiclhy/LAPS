@@ -51,13 +51,13 @@ public class Application {
 			employee2.setManager(manager1);
 			employee3.setManager(manager1);
 			
-			LeaveQuota leaveQuota1 = new LeaveQuota("2023", "Manager");
-			leaveQuota1.setAnnualLeaveQuota(18);
+			LeaveQuota leaveQuota1 = new LeaveQuota("Administrative" ,"2024", "Manager");
+			leaveQuota1.setAnnualLeaveQuota(14);
 			leaveQuota1.setMedicalLeaveQuota(60);
 			leaveQuotaRepository.save(leaveQuota1);
 			
-			LeaveQuota leaveQuota2 = new LeaveQuota("2023", "Employee");
-			leaveQuota2.setAnnualLeaveQuota(14);
+			LeaveQuota leaveQuota2 = new LeaveQuota("Professional", "2024", "Employee");
+			leaveQuota2.setAnnualLeaveQuota(18);
 			leaveQuota2.setMedicalLeaveQuota(60);
 			leaveQuotaRepository.save(leaveQuota2);
 			
@@ -75,18 +75,18 @@ public class Application {
 			employeeRepository.save(employee3);
 			
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			LocalDate date1 = LocalDate.parse("01/11/2023", df);
-			LocalDate date2 = LocalDate.parse("05/11/2023", df);
-			LocalDate date3 = LocalDate.parse("08/11/2023", df);
-			LocalDate date4 = LocalDate.parse("09/12/2023", df);
-			LocalDate date5 = LocalDate.parse("24/12/2023", df);
-			LocalDate date6 = LocalDate.parse("27/12/2023", df);
-			LocalDate date7 = LocalDate.parse("15/01/2023", df);
-			LocalDate date8 = LocalDate.parse("16/01/2023", df);
-			LocalDate date9 = LocalDate.parse("13/10/2023", df);
-			LocalDate date10 = LocalDate.parse("15/10/2023", df);
-			LocalDate date11 = LocalDate.parse("26/10/2023", df);
-			LocalDate date12 = LocalDate.parse("27/10/2023", df);
+			LocalDate date1 = LocalDate.parse("01/05/2024", df);
+			LocalDate date2 = LocalDate.parse("05/05/2024", df);
+			LocalDate date3 = LocalDate.parse("08/05/2024", df);
+			LocalDate date4 = LocalDate.parse("09/05/2024", df);
+			LocalDate date5 = LocalDate.parse("24/06/2024", df);
+			LocalDate date6 = LocalDate.parse("27/06/2024", df);
+			LocalDate date7 = LocalDate.parse("15/01/2024", df);
+			LocalDate date8 = LocalDate.parse("16/01/2024", df);
+			LocalDate date9 = LocalDate.parse("13/07/2024", df);
+			LocalDate date10 = LocalDate.parse("15/07/2024", df);
+			LocalDate date11 = LocalDate.parse("26/07/2024", df);
+			LocalDate date12 = LocalDate.parse("27/07/2024", df);
 			Leave annualLeave1 = leaveRepository.save(new Leave(date1, date2, "Holidays", LeaveType.Annual));
 			Leave compensationLeave1 = leaveRepository.save(new Leave(date5, date6, "Overtime", LeaveType.Compensation));
 			Leave medicalLeave1 = leaveRepository.save(new Leave(date3, date4, "Check up", LeaveType.Medical));
@@ -111,7 +111,7 @@ public class Application {
 			compensationLeave1.setDuration(3.5);
 			medicalLeave1.setDuration(2);
 			annualLeave2.setDuration(2);
-			annualLeave3.setDuration(10);
+			annualLeave3.setDuration(7);
 			compensationLeave2.setDuration(5);
 			medicalLeave2.setDuration(4);
 			medicalLeave3.setDuration(2);
@@ -138,10 +138,10 @@ public class Application {
 			leaveRepository.save(annualLeave4);
 			
 			
-			PublicHoliday PH1 = new PublicHoliday("New Year's Day", LocalDate.parse("01/01/2023", df));
-			PublicHoliday PH2 = new PublicHoliday("Chinese New Year Day 1", LocalDate.parse("22/01/2023", df));
-			PublicHoliday PH3 = new PublicHoliday("Chinese New Year Day 2", LocalDate.parse("23/01/2023", df));
-			PublicHoliday PH4 = new PublicHoliday("Good Friday", LocalDate.parse("07/04/2023", df));
+			PublicHoliday PH1 = new PublicHoliday("New Year's Day", LocalDate.parse("01/01/2024", df));
+			PublicHoliday PH2 = new PublicHoliday("Chinese New Year Day 1", LocalDate.parse("10/02/2024", df));
+			PublicHoliday PH3 = new PublicHoliday("Chinese New Year Day 2", LocalDate.parse("11/02/2024", df));
+			PublicHoliday PH4 = new PublicHoliday("Good Friday", LocalDate.parse("29/03/2024", df));
 			publicHolidayRepository.save(PH1);
 			publicHolidayRepository.save(PH2);
 			publicHolidayRepository.save(PH3);

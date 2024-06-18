@@ -74,11 +74,11 @@
 						<label for="applicationOutcome" class="col-sm-2 col-form-label">Application Outcome:</label>
 						<div class="col-sm-10">
 							<div class="form-check form-check-inline">
-								<input th:checked="${leave.status == T(sg.nus.iss.workshop.model.Status).Approved}" type="radio" name="applicationOutcome" id="approve" value="Approve" class="form-check-input" disabled>
+								<input th:checked="${leave.status == T(sg.nus.iss.java.model.Status).Approved}" type="radio" name="applicationOutcome" id="approve" value="Approve" class="form-check-input" disabled>
 								<label for="approve" class="form-check-label mr-4">Approve</label>
 							</div>
 							<div class="form-check form-check-inline">
-								<input th:checked="${leave.status == T(sg.nus.iss.workshop.model.Status).Rejected}" type="radio" name="applicationOutcome" id="reject" value="Reject" class="form-check-input" disabled>
+								<input th:checked="${leave.status == T(sg.nus.iss.java.model.Status).Rejected}" type="radio" name="applicationOutcome" id="reject" value="Reject" class="form-check-input" disabled>
 								<label for="reject" class="form-check-label mr-4">Reject</label>
 							</div>
 						</div>

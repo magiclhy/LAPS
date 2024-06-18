@@ -15,6 +15,7 @@
 				<thead>
 					<tr>
 						<th>No.</th>
+						<th>Name:</th>
 						<th>Year:</th>
 						<th>Role:</th>
 						<th>Annual Leave Quota:</th>
@@ -25,6 +26,7 @@
 				<tbody>
 					<tr th:each="leaveQuota, iterStat:${leaveQuotas}" style="text-align: center;">
 						<td th:text="${iterStat.count}"></td>
+						<td th:text="${leaveQuota.name}"></td>
 						<td th:text="${leaveQuota.year}"></td>
 						<td th:text="${leaveQuota.role}"></td>
 						<td th:text="${leaveQuota.annualLeaveQuota}"></td>

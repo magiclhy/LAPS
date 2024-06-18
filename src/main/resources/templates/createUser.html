@@ -34,6 +34,19 @@
 					</div>
 				</div>
 				
+				<div id="leaveQuotaEmp">
+					<div class="form-group row">
+						<label for="leaveQuotaEmp" class="col-sm-2 col-form-label">Set Leave Quota:</label>
+						<div class="col-sm-10">
+							<select name="leaveQuotaEmp" class="form-control">
+								<option value="" disabled selected>Select leave quota</option>
+								<option th:each="leaveQuota, iterStat:${leaveQuotasEmp}" 
+										th:value="${leaveQuota.id}" th:text="${leaveQuota.name}" ></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				
 				<div id="manager">
 					<div class="form-group row">
 						<label for="manager" class="col-sm-2 col-form-label">Set Manager:</label>
@@ -42,6 +55,19 @@
 								<option value="" disabled selected>Select manager</option>
 								<option th:each="manager, iterStat:${managers}" 
 										th:value="${manager.id}" th:text="${manager.name}" ></option>
+							</select>
+						</div>
+					</div>
+				</div>
+				
+				<div id="leaveQuotaManager">
+					<div class="form-group row">
+						<label for="leaveQuotaManager" class="col-sm-2 col-form-label">Set Leave Quota:</label>
+						<div class="col-sm-10">
+							<select name="leaveQuotaManager" class="form-control">
+								<option value="" disabled selected>Select leave quota</option>
+								<option th:each="leaveQuota, iterStat:${leaveQuotasManager}" 
+										th:value="${leaveQuota.id}" th:text="${leaveQuota.name}" ></option>
 							</select>
 						</div>
 					</div>
@@ -92,23 +118,49 @@
 			const dropDownElement = document.getElementById("type");
 			const managerElement = document.getElementById("manager");
 			const employeesElement = document.getElementById("employees");
+			const leaveQuotaManagerElement = document.getElementById("leaveQuotaManager")
+			const leaveQuotaEmpElement = document.getElementById("leaveQuotaEmp")
+			
+			document.getElementById('userForm').addEventListener('submit', function(event) {
+				if (dropDownElement.value === "Employee"){
+					var leaveQuotaEmpSelect = document.querySelector('select[name="leaveQuotaEmp"]');
+					if (leaveQuotaEmpSelect.value === "") {
+				        event.preventDefault();
+				        alert('Please select a leave quota.');
+				    }
+				}
+				else if(dropDownElement.value === "Manager"){
+					var leaveQuotaManagerSelect = document.querySelector('select[name="leaveQuotaManager"]');
+				    if (leaveQuotaManagerSelect.value === "") {
+				        event.preventDefault();
+				        alert('Please select a leave quota.');
+				    }
+				}
+			});
 			
 			$(document).ready(function () {
 				employeesElement.style.display = 'none';
+				leaveQuotaManagerElement.style.display = 'none';
 			});
 			
 			dropDownElement.addEventListener("change", function(){
 				if (dropDownElement.value === "Employee"){
 					managerElement.style.display = 'block';
 					employeesElement.style.display = 'none';
+					leaveQuotaEmpElement.style.display = 'block';
+					leaveQuotaManagerElement.style.display = 'none';
 				}
 				else if (dropDownElement.value === "Manager"){
 					managerElement.style.display = 'none';
 					employeesElement.style.display = 'block';
+					leaveQuotaEmpElement.style.display = 'none';
+					leaveQuotaManagerElement.style.display = 'block';
 				}
 				else if (dropDownElement.value === "Admin"){
 					managerElement.style.display = 'none';
 					employeesElement.style.display = 'none';
+					leaveQuotaEmpElement.style.display = 'none';
+					leaveQuotaManagerElement.style.display = 'none';
 				}
 			})
 

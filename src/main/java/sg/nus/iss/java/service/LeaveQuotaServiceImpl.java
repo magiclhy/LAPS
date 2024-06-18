@@ -18,7 +18,7 @@ public class LeaveQuotaServiceImpl implements LeaveQuotaService{
 	private LeaveQuotaRepository leaveQuotaRepository;
 
 	@Override
-	public LeaveQuota findLeaveQuota(String currentYear, String role) {
+	public List<LeaveQuota> findLeaveQuota(String currentYear, String role) {
 		return leaveQuotaRepository.findLeaveQuota(currentYear, role);
 	}
 

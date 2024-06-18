@@ -34,8 +34,8 @@
 						<td th:text="${leave.type}"></td>
 						<td th:text="${leave.status}"></td>
 						<td>
-							<a th:href="@{/leaves/edit/}+${leave.id}" th:if="${leave.status eq T(sg.nus.iss.workshop.model.Status).Applied or leave.status eq T(sg.nus.iss.workshop.model.Status).Updated}">Edit/Delete</a>
-							<a th:href="@{/leaves/cancel/}+${leave.id}" th:if="${leave.status eq T(sg.nus.iss.workshop.model.Status).Approved}">Cancel</a>
+							<a th:href="@{/leaves/edit/}+${leave.id}" th:if="${leave.status eq T(sg.nus.iss.java.model.Status).Applied or leave.status eq T(sg.nus.iss.java.model.Status).Updated}">Edit/Delete</a>
+							<a th:href="@{/leaves/cancel/}+${leave.id}" th:if="${leave.status eq T(sg.nus.iss.java.model.Status).Approved and leave.startDate.isAfter(today)}">Cancel</a>
 						</td>
 					</tr>
 				</tbody>
@@ -44,15 +44,16 @@
 		<br />
 		
 		<div>
-			<span>
-				<th:block th:with="prevPage=${currentPage-1}">
-				<a name="previous" id="previous" th:href="@{'/leaves/view?pageNo=' + ${prevPage} + '&pageSize=' + ${pageSize}}">Previous</a>
-			</span>&emsp;
-			<span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>&emsp;
-			<span>
-				<th:block th:with="nextPage=${currentPage+1}">
-				<a name="next" id="next" th:href="@{'/leaves/view?pageNo=' + ${nextPage} + '&pageSize=' + ${pageSize}}">Next</a>
-			</span>
+		    <span>
+		        <a name="previous" id="previous" th:href="@{'/leaves/view?pageNo=' + ${currentPage - 1} + '&pageSize=' + ${pageSize}}">Previous</a>
+		    </span>&emsp;
+		    <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>&emsp;
+		    <span th:if="${currentPage < totalPages - 1}">
+		        <a name="next" id="next" th:href="@{'/leaves/view?pageNo=' + ${currentPage + 1} + '&pageSize=' + ${pageSize}}">Next</a>
+		    </span>
+			<span th:if="${currentPage >= totalPages - 1}" style="color: grey;">
+		        Next
+		    </span>
 		</div>
 		<div style="margin-left: auto; margin-right: auto;">
 			<label for="pageSize" class="col-form-label">Results per page:</label>

@@ -44,6 +44,10 @@ public class LeaveController {
 		leave.setDuration(1); //Set duration to 1 as daterangepicker default date is today-today
 		Employee employee = (Employee) sessionObj.getAttribute("user");
 		model.addAttribute("leave", leave);
+		LocalDate startDate = LocalDate.now();
+		LocalDate endDate = LocalDate.now();
+		model.addAttribute("startDate", startDate.toString());
+		model.addAttribute("endDate", endDate.toString());
 		List<PublicHoliday> publicHolidays = publicHolidayService.findAllPublicHolidays();
 		model.addAttribute("publicHolidays", publicHolidays);
 		
@@ -64,6 +68,15 @@ public class LeaveController {
 			Model model, @RequestParam("type") LeaveType type, HttpSession sessionObj) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("Error binding :(");
+			if (leave.getStartDate() == null) {
+				leave.setDuration(1);
+			}
+	        LocalDate startDate = (leave.getStartDate() != null) ? leave.getStartDate() : LocalDate.now();
+	        LocalDate endDate = (leave.getEndDate() != null) ? leave.getEndDate() : LocalDate.now();
+			model.addAttribute("startDate", startDate.toString());
+			model.addAttribute("endDate", endDate.toString());
+			List<PublicHoliday> publicHolidays = publicHolidayService.findAllPublicHolidays();
+			model.addAttribute("publicHolidays", publicHolidays);
 			return "createLeave";
 		}
 		
@@ -99,17 +112,17 @@ public class LeaveController {
 	
 	//EMPLOYEE VIEW PERSONAL LEAVE RECORDS
 	@GetMapping("/view")
-	public String viewLeaves(Model model, HttpSession sessionObj, 
-			@RequestParam(defaultValue = "0") int pageNo, @RequestParam(defaultValue = "10") int pageSize) {
+	public String viewLeaves(Model model, HttpSession sessionObj,
+			@RequestParam(name = "pageNo", defaultValue = "0") int pageNo, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
 		Employee employee = (Employee) sessionObj.getAttribute("user");
 		int id = employee.getId();
-		System.out.println("pageNo: " + pageNo);
 		System.out.println("pageSize: " + pageSize);
 		Page<Leave> leavePage = leaveService.findAllLeavesByPage(id, pageNo, pageSize);
 		model.addAttribute("leaves", leavePage.getContent());
 		model.addAttribute("currentPage", leavePage.getNumber());
 		model.addAttribute("totalPages", leavePage.getTotalPages());
 		model.addAttribute("pageSize", pageSize);
+		model.addAttribute("today", LocalDate.now());
 		return "viewLeave";
 	}
 	
@@ -120,6 +133,10 @@ public class LeaveController {
 		if (optLeave.isPresent()) {
 			Leave leave = optLeave.get();
 			model.addAttribute(leave);
+			LocalDate startDate = leave.getStartDate();
+			LocalDate endDate = leave.getEndDate();
+			model.addAttribute("startDate", startDate.toString());
+			model.addAttribute("endDate", endDate.toString());
 			Employee employee = (Employee) sessionObj.getAttribute("user");
 			List<PublicHoliday> publicHolidays = publicHolidayService.findAllPublicHolidays();
 			model.addAttribute("publicHolidays", publicHolidays);
@@ -135,6 +152,16 @@ public class LeaveController {
 	public String saveLeave(@Valid @ModelAttribute Leave leave, BindingResult bindingResult,
 			Model model, HttpSession sessionObj, @RequestParam("id") int id) {
 		if (bindingResult.hasErrors()) {
+			System.out.println("Error binding :(");
+			if (leave.getStartDate() == null) {
+				leave.setDuration(1);
+			}
+	        LocalDate startDate = (leave.getStartDate() != null) ? leave.getStartDate() : LocalDate.now();
+	        LocalDate endDate = (leave.getEndDate() != null) ? leave.getEndDate() : LocalDate.now();
+			model.addAttribute("startDate", startDate.toString());
+			model.addAttribute("endDate", endDate.toString());
+			List<PublicHoliday> publicHolidays = publicHolidayService.findAllPublicHolidays();
+			model.addAttribute("publicHolidays", publicHolidays);
 			return "editLeave";
 		}
 		//If user is satisfied with daterangepicker default dates and did not select,
@@ -239,7 +266,7 @@ public class LeaveController {
 	//MANAGER VIEW SUBORDINATE LEAVES
 	@GetMapping("/viewSubLeaves")
 	public String viewSubLeaves(Model model, HttpSession sessionObj, 
-			@RequestParam(defaultValue = "0") int pageNo, @RequestParam(defaultValue = "10") int pageSize) {
+			@RequestParam(name = "pageNo", defaultValue = "0") int pageNo, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
 		Employee employee = (Employee) sessionObj.getAttribute("user");
 		int id = employee.getId();
 		Page<Leave> leavePage = leaveService.findAllLeavesOfSub(id, pageNo, pageSize);

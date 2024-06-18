@@ -1,5 +1,6 @@
 package sg.nus.iss.java.controller;
 
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
@@ -46,57 +47,69 @@ public class UserController {
 	//CREATE NEW USER
 	@GetMapping("/create")
 	public String createNewUser(Model model) {
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        String currentYearString = Integer.toString(currentYear);
 		List<Manager> managers = managerService.findAllManagers();
 		model.addAttribute("managers", managers);
 		List<Employee> employees = userService.findAllUsersByType("Employee");
 		model.addAttribute("employees", employees);
+		List<LeaveQuota> leaveQuotasManager = leaveQuotaService.findLeaveQuota(currentYearString, "Manager");
+		model.addAttribute("leaveQuotasManager", leaveQuotasManager);
+		List<LeaveQuota> leaveQuotasEmp = leaveQuotaService.findLeaveQuota(currentYearString, "Employee");
+		model.addAttribute("leaveQuotasEmp", leaveQuotasEmp);
 		model.addAttribute("user", new User());
 		return "createUser";
 	}
 	
 	@PostMapping("/create")
 	public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, 
-			@RequestParam("type") String type, @RequestParam("manager") Optional<Integer> managerId, 
-			@RequestParam("employees") Optional<List<Integer>> employeeIds, Model model) {
-		if (bindingResult.hasErrors()) {
-			List<Manager> managers = managerService.findAllManagers();
-			model.addAttribute("managers", managers);
-			List<Employee> employees = userService.findAllUsersByType("Employee");
-			model.addAttribute("employees", employees);
-			return "createUser";
-		}
-		else {
-			String currentYear = Year.now().toString();
-			LeaveQuota leaveQuota = leaveQuotaService.findLeaveQuota(currentYear, type);
-			if (type.equals("Employee")) {
-				Employee employee = convertUserToEmployee(user, new Employee());
-				Manager managerOfEmp = managerService.findManagerById(managerId);
-				employee.setManager(managerOfEmp);
-				employee.setLeaveQuota(leaveQuota);
-				employeeService.saveEmployee(employee);
-			}
-			else if (type.equals("Manager")) {
-				Manager manager = convertUserToManager(user, new Manager());
-				managerService.saveManager(manager);
-				if (employeeIds.isPresent()) {
-					List<Integer> employeeIdsList = employeeIds.get();
-					for (int empId : employeeIdsList) {
-						Optional<Employee> optEmployee = employeeService.findEmployeeById(empId);
-						if (optEmployee.isPresent()) {
-							Employee employee = optEmployee.get();
-							employee.setManager(manager);
-						}
-					}
-					manager.setLeaveQuota(leaveQuota);
-				}
-				managerService.saveManager(manager);
-			}
-			else if (type.equals("Admin")) {
-				Admin admin = convertUserToAdmin(user, new Admin());
-				adminService.saveAdmin(admin);
-			}
-		}
-		return "redirect:/home";
+	                     @RequestParam("type") String type, @RequestParam("manager") Optional<Integer> managerId, 
+	                     @RequestParam("employees") Optional<List<Integer>> employeeIds, 
+	                     @RequestParam("leaveQuotaManager") Optional<LeaveQuota> leaveQuotaManager,
+	                     @RequestParam("leaveQuotaEmp") Optional<LeaveQuota> leaveQuotaEmp, Model model) {
+	    if (bindingResult.hasErrors()) {
+	        List<Manager> managers = managerService.findAllManagers();
+	        model.addAttribute("managers", managers);
+	        List<Employee> employees = userService.findAllUsersByType("Employee");
+	        model.addAttribute("employees", employees);
+	        return "createUser";
+	    } else {
+
+	        if (type.equals("Employee")) {
+	            Employee employee = convertUserToEmployee(user, new Employee());
+
+	            managerId.ifPresent(id -> {
+	                Optional<Manager> managerOptional = managerService.findManagerById(id);
+	                managerOptional.ifPresent(employee::setManager);
+	            });
+
+	            leaveQuotaEmp.ifPresent(employee::setLeaveQuota);
+
+	            employeeService.saveEmployee(employee);
+	        } else if (type.equals("Manager")) {
+	            Manager manager = convertUserToManager(user, new Manager());
+
+	            leaveQuotaManager.ifPresent(manager::setLeaveQuota);
+
+	            if (employeeIds.isPresent()) {
+	                List<Integer> employeeIdsList = employeeIds.get();
+	                for (int empId : employeeIdsList) {
+	                    Optional<Employee> optEmployee = employeeService.findEmployeeById(empId);
+	                    optEmployee.ifPresent(employee -> {
+	                        employee.setManager(manager);
+	                        employeeService.saveEmployee(employee);
+	                    });
+	                }
+	            }
+
+	            managerService.saveManager(manager);
+	        } else if (type.equals("Admin")) {
+	            Admin admin = convertUserToAdmin(user, new Admin());
+	            adminService.saveAdmin(admin);
+	        }
+	    }
+	    return "redirect:/home";
 	}
 	
 	//VIEW USER DETAILS
@@ -124,8 +137,15 @@ public class UserController {
 	public String editUserDetails(@PathVariable("id") Integer id, ModelMap model) {
 		//Send over the list of managers and employee in case the employee's role will be changed
 		//Remove employee from the list of names so they cannot be their own manager/employee
+		LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        String currentYearString = Integer.toString(currentYear);
 		List<Employee> managers = userService.findAllUsersByType("Manager");
 		List<Employee> employees = userService.findAllUsersByType("Employee");
+		List<LeaveQuota> leaveQuotasManager = leaveQuotaService.findLeaveQuota(currentYearString, "Manager");
+		model.addAttribute("leaveQuotasManager", leaveQuotasManager);
+		List<LeaveQuota> leaveQuotasEmp = leaveQuotaService.findLeaveQuota(currentYearString, "Employee");
+		model.addAttribute("leaveQuotasEmp", leaveQuotasEmp);
 		Optional<User> optUser = userService.findUserById(id);
 		if (optUser.isPresent()) {
 			User user = optUser.get();
@@ -156,15 +176,17 @@ public class UserController {
 	@PostMapping("/save")
 	public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, 
 			@RequestParam("type") String type, @RequestParam("manager") Optional<Integer> managerId, 
-			@RequestParam("employees") Optional<List<Integer>> employeeIds, @RequestParam("id") int userId, Model model, 
-			@RequestParam("changeRole") String changeRole) {
+			@RequestParam("employees") Optional<List<Integer>> employeeIds, 
+			@RequestParam("leaveQuotaManager") Optional<LeaveQuota> leaveQuotaManager,
+            @RequestParam("leaveQuotaEmp") Optional<LeaveQuota> leaveQuotaEmp,
+            @RequestParam("id") int userId, Model model, @RequestParam("changeRole") String changeRole) {
 		if (bindingResult.hasErrors()) {
 			return "editUser";
 		}
 		else {
 			System.out.println("!!!type: " + type);
 			String currentYear = Year.now().toString();
-			LeaveQuota leaveQuota = leaveQuotaService.findLeaveQuota(currentYear, type);
+			//LeaveQuota leaveQuota = leaveQuotaService.findLeaveQuota(currentYear, type);
 			if (type.equals("Employee")) {
 				if (changeRole.equals("yes")) {
 					//If role changed, need to change class
@@ -173,7 +195,8 @@ public class UserController {
 					employee.setId(userId);
 					Manager managerOfEmp = managerService.findManagerById(managerId);
 					employee.setManager(managerOfEmp);
-					employee.setLeaveQuota(leaveQuota);
+					//employee.setLeaveQuota(leaveQuota);
+					leaveQuotaEmp.ifPresent(employee::setLeaveQuota);
 					employeeService.saveEmployee(employee);
 				}
 				else if (changeRole.equals("no")) {
@@ -182,7 +205,8 @@ public class UserController {
 					Employee employee = convertUserToEmployee(user, currEmployee);
 					Manager managerOfEmp = managerService.findManagerById(managerId);
 					employee.setManager(managerOfEmp);
-					employee.setLeaveQuota(leaveQuota);
+					//employee.setLeaveQuota(leaveQuota);
+					leaveQuotaEmp.ifPresent(employee::setLeaveQuota);
 					employeeService.saveEmployee(employee);
 				}
 			}
@@ -192,6 +216,7 @@ public class UserController {
 					Manager manager = convertUserToManager(user, new Manager());
 					userService.deleteUserById(userId);
 					manager.setId(userId);
+					leaveQuotaManager.ifPresent(manager::setLeaveQuota);
 					if (employeeIds.isPresent()) {
 						List<Integer> employeeIdsList = employeeIds.get();
 						for (int empId : employeeIdsList) {
@@ -202,7 +227,7 @@ public class UserController {
 							}
 						}
 					}
-					manager.setLeaveQuota(leaveQuota);
+					//manager.setLeaveQuota(leaveQuota);
 					managerService.saveManager(manager);
 				}
 				else if (changeRole.equals("no")){
@@ -210,6 +235,7 @@ public class UserController {
 					Manager currManager = managerService.findManagerById(userId).get();
 					Manager manager = convertUserToManager(user, currManager);
 					managerService.saveManager(manager);
+					leaveQuotaManager.ifPresent(manager::setLeaveQuota);
 					if (employeeIds.isPresent()) {
 						List<Integer> employeeIdsList = employeeIds.get();
 						for (int empId : employeeIdsList) {
@@ -220,7 +246,7 @@ public class UserController {
 							}
 						}
 					}
-					manager.setLeaveQuota(leaveQuota);
+					//manager.setLeaveQuota(leaveQuota);
 					managerService.saveManager(manager);
 				}
 			}

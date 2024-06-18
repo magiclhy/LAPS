@@ -7,7 +7,7 @@ import sg.nus.iss.java.model.LeaveQuota;
 
 public interface LeaveQuotaService {
 
-	LeaveQuota findLeaveQuota(String currentYear, String role);
+	List<LeaveQuota> findLeaveQuota(String currentYear, String role);
 
 	List<LeaveQuota> findAllLeaveQuotas();
 

@@ -32,7 +32,7 @@
 						<td th:text="${claim.hours}"></td>
 						<td th:text="${claim.status}"></td>
 						<td>
-							<a th:href="@{/compensation/details/}+${claim.id}" th:if="${claim.status eq T(sg.nus.iss.workshop.model.Status).Applied}">Delete</a>
+							<a th:href="@{/compensation/details/}+${claim.id}" th:if="${claim.status eq T(sg.nus.iss.java.model.Status).Applied}">Delete</a>
 						</td>
 					</tr>
 				</tbody>

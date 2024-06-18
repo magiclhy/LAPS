@@ -21,8 +21,8 @@ public class AccountController {
 	
 	@GetMapping({"/", "/login"})
 	public String login(HttpSession sessionObj) {
-		if (sessionObj.getAttribute("userId") != null) {
-			return "home";
+		if (sessionObj.getAttribute("user") != null) {
+			return "redirect:/home";
 		}
 		return "login";
 	}
@@ -46,12 +46,15 @@ public class AccountController {
 	
 	@GetMapping("/logout")
 	public String logout(HttpSession sessionObj) {
-		sessionObj.invalidate();
+		sessionObj.removeAttribute("user");
 		return "redirect:/";
 	}
 	
 	@GetMapping("/home")
-	public String showHome() {
+	public String showHome(HttpSession sessionObj) {
+		if (sessionObj.getAttribute("user") == null) {
+			return "redirect:/login";
+		}
 		return "home";
 	}
 }
