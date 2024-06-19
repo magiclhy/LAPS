@@ -22,6 +22,7 @@
 							<option value="Employee">Employee</option>
 							<option value="Manager">Manager</option>
 							<option value="Admin">Admin</option>
+							<option value="Ceo"disabled>CEO</option>
 						</select>
 						<span id="messageRole" name="messageRole" style="color: grey;" class="col-sm-10"></span>
 						<input type="text" name="changeRole" id="changeRole" value="no" hidden/>
@@ -44,8 +45,8 @@
 							<select name="leaveQuotaEmp" class="form-control">
 								<option value="" disabled selected>Select leave quota</option>
 								<option th:each="leaveQuota, iterStat:${leaveQuotasEmp}" 
-										th:value="${leaveQuota.id}" th:text="${leaveQuota.id}" 
-										th:selected="${leaveQuota.id == user.leaveQuota.name}"></option>
+										th:value="${leaveQuota.id}" th:text="${leaveQuota.name}" 
+										th:selected="${leaveQuota.id == user.leaveQuota.id}"></option>
 							</select>
 						</div>
 					</div>
@@ -73,8 +74,8 @@
 							<select name="leaveQuotaManager" class="form-control">
 								<option value="" disabled selected>Select leave quota</option>
 								<option th:each="leaveQuota, iterStat:${leaveQuotasManager}" 
-										th:value="${leaveQuota.id}" th:text="${leaveQuota.id}" 
-										th:selected="${leaveQuota.id == user.leaveQuota.name}"></option>
+										th:value="${leaveQuota.id}" th:text="${leaveQuota.name}" 
+										th:selected="${leaveQuota.id == user.leaveQuota.id}"></option>
 							</select>
 						</div>
 					</div>
@@ -112,7 +113,7 @@
 				</div>
 				<label for="submit" class="col-sm-2 col-form-label"></label>
 				<button type="submit" name="submit" class="btn btn-primary">Submit</button>
-				<button type="button" class="btn btn-primary" onclick="promptDelete()">Delete</button>
+				<button type="button" id="delete" name = "delete" class="btn btn-primary" onclick="promptDelete()">Delete</button>
 			</form>
 			<br />
 		</div>
@@ -124,6 +125,7 @@
 		
 		<script th:inline="javascript">
 			const dropDownElement = document.getElementById("type");
+			const hiddenTypeElement = document.getElementById("typeHidden");
 			const managerDiv = document.getElementById("manager");
 			const employeesDiv = document.getElementById("employees");
 			const employeesField = document.getElementById("employeesField");
@@ -132,8 +134,9 @@
 			const changeRoleElement = document.getElementById("changeRole");
 			const messageRoleElement = document.getElementById("messageRole");
 			const type2Hidden = document.getElementById("type2");
-			const leaveQuotaManagerElement = document.getElementById("leaveQuotaManager")
-			const leaveQuotaEmpElement = document.getElementById("leaveQuotaEmp")
+			const leaveQuotaManagerElement = document.getElementById("leaveQuotaManager");
+			const leaveQuotaEmpElement = document.getElementById("leaveQuotaEmp");
+			const deleteButtonElement = document.getElementById("delete");
 			
 			$(document).ready(function () {
 				if (dropDownElement.value === "Employee"){
@@ -152,6 +155,18 @@
 						console.log("type2Hidden.value = " + type2Hidden.value)
 						dropDownElement.setAttribute("disabled", "");	
 					}
+				}
+				else if (dropDownElement.value === "Ceo"){
+					var deleteButton = document.querySelector('button[name="delete"]');
+					managerDiv.style.display = 'none';
+					employeesDiv.style.display = 'none';
+					leaveQuotaEmpElement.style.display = 'none';
+					leaveQuotaManagerElement.style.display = 'none';
+					deleteButtonElement.style.display = 'none';
+					deleteButton.disabled = true;
+					type2Hidden.removeAttribute("disabled");
+					type2Hidden.value = dropDownElement.value;
+					dropDownElement.setAttribute("disabled", "");
 				}
 			});
 			

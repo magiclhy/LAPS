@@ -48,8 +48,13 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public List<Leave> findLeavesForApproval(int id) {
-		return leaveRepository.findLeavesforApproval(id);
+	public List<Leave> findEmpLeavesForApproval(int id) {
+		return leaveRepository.findEmpLeavesforApproval(id);
+	}
+	
+	@Override
+	public List<Leave> findManLeavesForApproval(int id) {
+		return leaveRepository.findManLeavesforApproval(id);
 	}
 
 	@Override
@@ -58,9 +63,16 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public Page<Leave> findAllLeavesOfSub(int id, int pageNo, int pageSize) {
+	public Page<Leave> findAllLeavesOfEmpSub(int id, int pageNo, int pageSize) {
 		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-		Page<Leave> leavePage = leaveRepository.findAllLeavesOfSub(id, pageRequest);
+		Page<Leave> leavePage = leaveRepository.findAllLeavesOfEmpSub(id, pageRequest);
+		return leavePage;
+	}
+	
+	@Override
+	public Page<Leave> findAllLeavesOfManSub(int id, int pageNo, int pageSize) {
+		PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+		Page<Leave> leavePage = leaveRepository.findAllLeavesOfManSub(id, pageRequest);
 		return leavePage;
 	}
 

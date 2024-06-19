@@ -13,9 +13,11 @@ public interface LeaveService {
 	Leave createLeave(Leave leave);
 	void deleteLeave(int id);
 	Leave saveLeave(Leave leave);
-	List<Leave> findLeavesForApproval(int id);
+	List<Leave> findEmpLeavesForApproval(int id);
+	List<Leave> findManLeavesForApproval(int id);
 	List<Leave> findAllLeavesDuringLeavePeriod(int id, LocalDate startDate, LocalDate endDate);
-	Page<Leave> findAllLeavesOfSub(int id, int pageNo, int pageSize);
+	Page<Leave> findAllLeavesOfEmpSub(int id, int pageNo, int pageSize);
+	Page<Leave> findAllLeavesOfManSub(int id, int pageNo, int pageSize);
 	List<Leave> findAllLeavesCurrMonth();
 	List<Leave> findAllLeavesPrevMonth();
 	List<Leave> findAllLeavesNextMonth();

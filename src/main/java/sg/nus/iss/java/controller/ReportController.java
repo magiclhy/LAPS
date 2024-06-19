@@ -89,11 +89,17 @@ public class ReportController {
 	public String searchResultsClaims(@RequestParam("name") String name, HttpSession sessionObj, Model model) {
 		//Get manager id from session 
 		Employee employee = (Employee) sessionObj.getAttribute("user");
-		int managerId = employee.getId();
-		List<CompensationClaim> claims = compensationClaimService.findAllClaimsByName(managerId, name);
-		model.addAttribute("claims", claims);
-		
-		sessionObj.setAttribute("listToExport", claims);
+		int supId = employee.getId();
+		if (sessionObj.getAttribute("role").equals("Manager")) {
+			List<CompensationClaim> claims = compensationClaimService.findAllEmpClaimsByName(supId, name);
+			model.addAttribute("claims", claims);
+			sessionObj.setAttribute("listToExport", claims);
+		}
+		else if (sessionObj.getAttribute("role").equals("Ceo")) {
+			List<CompensationClaim> claims = compensationClaimService.findAllManClaimsByName(supId, name);
+			model.addAttribute("claims", claims);
+			sessionObj.setAttribute("listToExport", claims);
+		}
 		return "searchResultsClaims";
 	}
 	

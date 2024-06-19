@@ -16,6 +16,9 @@ public class Manager extends Employee {
 	@OneToMany(mappedBy="manager")
 	private List<Employee> employees;
 	
+	@ManyToOne
+	private Ceo ceo;
+	
 	public Manager() {
 		super();
 		employees = new ArrayList<>();
@@ -32,6 +35,14 @@ public class Manager extends Employee {
 
 	public void setEmployees(List<Employee> employees) {
 		this.employees = employees;
+	}
+
+	public Ceo getCeo() {
+		return ceo;
+	}
+
+	public void setCeo(Ceo ceo) {
+		this.ceo = ceo;
 	}
 
 }

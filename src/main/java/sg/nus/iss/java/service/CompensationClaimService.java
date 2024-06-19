@@ -9,11 +9,15 @@ public interface CompensationClaimService {
 
 	CompensationClaim save(CompensationClaim claim);
 
-	List<CompensationClaim> findClaimsForApproval(int id);
+	List<CompensationClaim> findEmpClaimsForApproval(int id);
+	
+	List<CompensationClaim> findManClaimsForApproval(int id);
 
 	Optional<CompensationClaim> findClaim(Integer id);
 
-	List<CompensationClaim> findAllClaimsByName(int id, String name);
+	List<CompensationClaim> findAllEmpClaimsByName(int id, String name);
+	
+	List<CompensationClaim> findAllManClaimsByName(int id, String name);
 
 	List<CompensationClaim> findAllClaimsById(int id);
 

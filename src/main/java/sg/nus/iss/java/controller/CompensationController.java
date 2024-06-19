@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import jakarta.validation.Valid;
 import sg.nus.iss.java.model.CompensationClaim;
 import sg.nus.iss.java.model.CompensationLedger;
 import sg.nus.iss.java.model.Employee;
+import sg.nus.iss.java.model.Leave;
 import sg.nus.iss.java.model.Status;
 import sg.nus.iss.java.service.CompensationClaimService;
 
@@ -87,8 +89,14 @@ public class CompensationController {
 	public String processClaims(Model model, HttpSession sessionObj) {
 		Employee employee = (Employee) sessionObj.getAttribute("user");
 		int id = employee.getId();
-		List<CompensationClaim> claims = compensationClaimService.findClaimsForApproval(id);
-		model.addAttribute("claims", claims);
+		if (sessionObj.getAttribute("role").equals("Manager")) {
+			List<CompensationClaim> claims = compensationClaimService.findEmpClaimsForApproval(id);
+			model.addAttribute("claims", claims);
+		}
+		else if (sessionObj.getAttribute("role").equals("Ceo")) {
+			List<CompensationClaim> claims = compensationClaimService.findManClaimsForApproval(id);
+			model.addAttribute("claims", claims);
+		}
 		return "viewClaimForApproval";
 	}
 	

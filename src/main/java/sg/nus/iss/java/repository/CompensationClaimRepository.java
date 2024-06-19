@@ -17,7 +17,14 @@ public interface CompensationClaimRepository extends JpaRepository <Compensation
 			"JOIN e.manager m WHERE m.id = :id "
 			+ "AND c.status = 'Applied' "
 			+ "ORDER BY e.name")
-	List<CompensationClaim> findClaimsForApproval(@Param("id") int id);
+	List<CompensationClaim> findEmpClaimsForApproval(@Param("id") int id);
+	
+	@Query("SELECT c FROM CompensationClaim c " +
+			"JOIN c.employee e " + 
+			"JOIN e.ceo ceo WHERE ceo.id = :id "
+			+ "AND c.status = 'Applied' "
+			+ "ORDER BY e.name")
+	List<CompensationClaim> findManClaimsForApproval(@Param("id") int id);
 
 	@Query("SELECT c FROM CompensationClaim c " +
 			"JOIN c.employee e " + 
@@ -25,9 +32,16 @@ public interface CompensationClaimRepository extends JpaRepository <Compensation
 			+ "AND c.status = 'Approved' "
 			+ "AND LOWER(e.name) like CONCAT('%',LOWER(:name),'%') "
 			+ "ORDER BY c.date ")
-	List<CompensationClaim> findAllClaimsByName(@Param("id") int id, @Param("name") String name);
-
+	List<CompensationClaim> findAllEmpClaimsByName(@Param("id") int id, @Param("name") String name);
 	
+	@Query("SELECT c FROM CompensationClaim c " +
+			"JOIN c.employee e " + 
+			"JOIN e.ceo ceo WHERE ceo.id = :id "
+			+ "AND c.status = 'Approved' "
+			+ "AND LOWER(e.name) like CONCAT('%',LOWER(:name),'%') "
+			+ "ORDER BY c.date ")
+	List<CompensationClaim> findAllManClaimsByName(@Param("id") int id, @Param("name") String name);
+
 	@Query("SELECT c FROM CompensationClaim c " +
 			"WHERE c.employee.id = :id "
 			+ "ORDER BY c.date")

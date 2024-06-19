@@ -23,8 +23,13 @@ public class CompensationClaimServiceImpl implements CompensationClaimService{
 	}
 
 	@Override
-	public List<CompensationClaim> findClaimsForApproval(int id) {
-		return compensationClaimRepository.findClaimsForApproval(id) ;
+	public List<CompensationClaim> findEmpClaimsForApproval(int id) {
+		return compensationClaimRepository.findEmpClaimsForApproval(id) ;
+	}
+	
+	@Override
+	public List<CompensationClaim> findManClaimsForApproval(int id) {
+		return compensationClaimRepository.findManClaimsForApproval(id) ;
 	}
 
 	@Override
@@ -33,8 +38,13 @@ public class CompensationClaimServiceImpl implements CompensationClaimService{
 	}
 
 	@Override
-	public List<CompensationClaim> findAllClaimsByName(int id, String name) {
-		return compensationClaimRepository.findAllClaimsByName(id, name);
+	public List<CompensationClaim> findAllEmpClaimsByName(int id, String name) {
+		return compensationClaimRepository.findAllEmpClaimsByName(id, name);
+	}
+	
+	@Override
+	public List<CompensationClaim> findAllManClaimsByName(int id, String name) {
+		return compensationClaimRepository.findAllManClaimsByName(id, name);
 	}
 
 	@Override

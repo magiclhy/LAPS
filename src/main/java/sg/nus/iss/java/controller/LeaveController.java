@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import sg.nus.iss.java.model.Ceo;
 import sg.nus.iss.java.model.Employee;
 import sg.nus.iss.java.model.Leave;
 import sg.nus.iss.java.model.LeaveType;
@@ -42,7 +43,6 @@ public class LeaveController {
 	public String createNewLeave(Model model, HttpSession sessionObj) {
 		Leave leave = new Leave();
 		leave.setDuration(1); //Set duration to 1 as daterangepicker default date is today-today
-		Employee employee = (Employee) sessionObj.getAttribute("user");
 		model.addAttribute("leave", leave);
 		LocalDate startDate = LocalDate.now();
 		LocalDate endDate = LocalDate.now();
@@ -50,7 +50,10 @@ public class LeaveController {
 		model.addAttribute("endDate", endDate.toString());
 		List<PublicHoliday> publicHolidays = publicHolidayService.findAllPublicHolidays();
 		model.addAttribute("publicHolidays", publicHolidays);
-		
+
+		Employee employee = (Employee) sessionObj.getAttribute("user");
+		String Role = (String) sessionObj.getAttribute("role");
+		model.addAttribute("role", Role);
 		double annualLeaveBal = employee.calculateLeaveBalByType(LeaveType.Annual);
 		sessionObj.setAttribute("annualLeaveBal", annualLeaveBal);
 		double medicalLeaveBal = employee.calculateLeaveBalByType(LeaveType.Medical);
@@ -82,7 +85,11 @@ public class LeaveController {
 		
 		//Get employee object from session and save to leave
 		Employee employee = (Employee) sessionObj.getAttribute("user");
+		//CEO's leave request will be automatically approved
 		leave.setEmployee(employee);
+		if (leave.getEmployee().getType().equals("Ceo")) {
+			leave.setStatus(Status.Approved);
+		}
 		
 		//Set type of leave
 		switch (type) {
@@ -227,8 +234,14 @@ public class LeaveController {
 	public String processLeaves(Model model, HttpSession sessionObj) {
 		Employee employee = (Employee) sessionObj.getAttribute("user");
 		int id = employee.getId();
-		List<Leave> leaves = leaveService.findLeavesForApproval(id);
-		model.addAttribute("leaves", leaves);
+		if (sessionObj.getAttribute("role").equals("Manager")) {
+			List<Leave> leaves = leaveService.findEmpLeavesForApproval(id);
+			model.addAttribute("leaves", leaves);
+		}
+		else if (sessionObj.getAttribute("role").equals("Ceo")) {
+			List<Leave> leaves = leaveService.findManLeavesForApproval(id);
+			model.addAttribute("leaves", leaves);
+		}
 		return "viewLeaveForApproval";
 	}
 	
@@ -269,11 +282,21 @@ public class LeaveController {
 			@RequestParam(name = "pageNo", defaultValue = "0") int pageNo, @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
 		Employee employee = (Employee) sessionObj.getAttribute("user");
 		int id = employee.getId();
-		Page<Leave> leavePage = leaveService.findAllLeavesOfSub(id, pageNo, pageSize);
-		model.addAttribute("leaves", leavePage.getContent());
-		model.addAttribute("currentPage", leavePage.getNumber());
-		model.addAttribute("totalPages", leavePage.getTotalPages());
-		model.addAttribute("pageSize", pageSize);
+		if (sessionObj.getAttribute("role").equals("Manager")) {
+			Page<Leave> leavePage = leaveService.findAllLeavesOfEmpSub(id, pageNo, pageSize);
+			model.addAttribute("leaves", leavePage.getContent());
+			model.addAttribute("currentPage", leavePage.getNumber());
+			model.addAttribute("totalPages", leavePage.getTotalPages());
+			model.addAttribute("pageSize", pageSize);
+		}
+		else if (sessionObj.getAttribute("role").equals("Ceo")) {
+			Page<Leave> leavePage = leaveService.findAllLeavesOfManSub(id, pageNo, pageSize);
+			model.addAttribute("leaves", leavePage.getContent());
+			model.addAttribute("currentPage", leavePage.getNumber());
+			model.addAttribute("totalPages", leavePage.getTotalPages());
+			model.addAttribute("pageSize", pageSize);
+		}
+		
 		return "viewSubLeave";
 	}
 	

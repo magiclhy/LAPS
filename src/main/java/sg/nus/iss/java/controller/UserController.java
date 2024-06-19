@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 import sg.nus.iss.java.model.Admin;
+import sg.nus.iss.java.model.Ceo;
 import sg.nus.iss.java.model.Employee;
 import sg.nus.iss.java.model.LeaveQuota;
 import sg.nus.iss.java.model.Manager;
 import sg.nus.iss.java.model.User;
 import sg.nus.iss.java.service.AdminService;
+import sg.nus.iss.java.service.CeoService;
 import sg.nus.iss.java.service.EmployeeService;
 import sg.nus.iss.java.service.LeaveQuotaService;
 import sg.nus.iss.java.service.ManagerService;
@@ -41,6 +43,8 @@ public class UserController {
 	private ManagerService managerService;
 	@Autowired
 	private AdminService adminService;
+	@Autowired
+	private CeoService ceoService;
 	@Autowired
 	private LeaveQuotaService leaveQuotaService;
 	
@@ -163,6 +167,11 @@ public class UserController {
 				managers.remove(manager);
 				employees.remove(manager);
 			}
+			else if (user.getType().equals("Ceo")) {
+				Ceo ceo = ceoService.findCeoById(id).get();
+				model.addAttribute("user", ceo);
+				model.addAttribute("managers", ceo.getManagers());
+			}
 			else if (user.getType().equals("Admin")) {
 				Admin admin = adminService.findAdminById(id).get();
 				model.addAttribute("user", admin);
@@ -265,6 +274,11 @@ public class UserController {
 					adminService.saveAdmin(admin);
 				}
 			}
+			else {
+				Ceo currCeo = ceoService.findCeoById(userId).get();
+				Ceo ceo = convertUserToCeo(user, currCeo);
+				ceoService.saveCeo(ceo);
+			}
 		}
 		return "redirect:/home";
 	}
@@ -299,5 +313,12 @@ public class UserController {
 		newAdmin.setUsername(user.getUsername());
 		newAdmin.setPassword(user.getPassword());
 		return newAdmin;
+	}
+	
+	public Ceo convertUserToCeo(User user, Ceo ceo) {
+		ceo.setName(user.getName());
+		ceo.setUsername(user.getUsername());
+		ceo.setPassword(user.getPassword());
+		return ceo;
 	}
 }

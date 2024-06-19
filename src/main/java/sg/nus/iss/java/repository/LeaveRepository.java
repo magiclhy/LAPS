@@ -21,7 +21,14 @@ public interface LeaveRepository extends JpaRepository <Leave, Integer>{
 			"JOIN e.manager m WHERE m.id = :id "
 			+ "AND (l.status = 'Applied' OR l.status = 'Updated') "
 			+ "ORDER BY e.name")
-	List<Leave> findLeavesforApproval(@Param("id") int id);
+	List<Leave> findEmpLeavesforApproval(@Param("id") int id);
+	
+	@Query("SELECT l FROM Leave l " +
+			"JOIN l.employee e " + 
+			"JOIN e.ceo c WHERE c.id = :id "
+			+ "AND (l.status = 'Applied' OR l.status = 'Updated') "
+			+ "ORDER BY e.name")
+	List<Leave> findManLeavesforApproval(@Param("id") int id);
 	
 	@Query("SELECT l FROM Leave l " +
 			"JOIN l.employee e " + 
@@ -38,8 +45,16 @@ public interface LeaveRepository extends JpaRepository <Leave, Integer>{
 			+ "AND (l.status = 'Approved' OR l.status = 'Rejected') "
 			+ "AND YEAR(startDate) = YEAR(CURDATE()) "
 			+ "ORDER BY l.startDate")
-	Page<Leave> findAllLeavesOfSub(@Param("id") int id, Pageable pageable);
-
+	Page<Leave> findAllLeavesOfEmpSub(@Param("id") int id, Pageable pageable);
+	
+	@Query("SELECT l FROM Leave l " +
+			"JOIN l.employee e " + 
+			"JOIN e.ceo c WHERE c.id = :id "
+			+ "AND (l.status = 'Approved' OR l.status = 'Rejected') "
+			+ "AND YEAR(startDate) = YEAR(CURDATE()) "
+			+ "ORDER BY l.startDate")
+	Page<Leave> findAllLeavesOfManSub(@Param("id") int id, Pageable pageable);
+	
 	@Query("SELECT l FROM Leave l "
 			+ "WHERE l.status = 'Approved' "
 			+ "AND (MONTH(startDate) = MONTH(CURDATE())) "

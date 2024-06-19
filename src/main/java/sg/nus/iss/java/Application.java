@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import sg.nus.iss.java.model.Admin;
+import sg.nus.iss.java.model.Ceo;
 import sg.nus.iss.java.model.CompensationClaim;
 import sg.nus.iss.java.model.CompensationLedger;
 import sg.nus.iss.java.model.Employee;
@@ -20,6 +21,7 @@ import sg.nus.iss.java.model.Manager;
 import sg.nus.iss.java.model.PublicHoliday;
 import sg.nus.iss.java.model.Status;
 import sg.nus.iss.java.repository.AdminRepository;
+import sg.nus.iss.java.repository.CeoRepository;
 import sg.nus.iss.java.repository.CompensationClaimRepository;
 import sg.nus.iss.java.repository.CompensationLedgerRepository;
 import sg.nus.iss.java.repository.EmployeeRepository;
@@ -37,7 +39,7 @@ public class Application {
 	
 	@Bean
 	public CommandLineRunner commandLineRun(EmployeeRepository employeeRepository, LeaveRepository leaveRepository, 
-			AdminRepository adminRepository, ManagerRepository managerRepository, PublicHolidayRepository publicHolidayRepository, 
+			AdminRepository adminRepository, ManagerRepository managerRepository, CeoRepository ceoRepository, PublicHolidayRepository publicHolidayRepository, 
 			LeaveQuotaRepository leaveQuotaRepository, CompensationLedgerRepository compensationLedgerRepository, 
 			CompensationClaimRepository compensationClaimRepository) {
 		return args -> {
@@ -46,10 +48,13 @@ public class Application {
 			Employee employee1 = employeeRepository.save(new Employee("Hercule Poirot", "employee1", "employee1"));
 			Employee employee2 = employeeRepository.save(new Employee("Sherlock Holmes", "employee2", "employee2"));
 			Employee employee3 = employeeRepository.save(new Employee("Miss Marple", "employee3", "employee3"));
+			Ceo ceo = ceoRepository.save(new Ceo("Jay Gatsby", "ceo", "ceo"));
 			Admin admin1 = adminRepository.save(new Admin("Dr Watson", "admin1", "admin1"));
 			employee1.setManager(manager1);
 			employee2.setManager(manager1);
 			employee3.setManager(manager1);
+			manager1.setCeo(ceo);
+			manager2.setCeo(ceo);
 			
 			LeaveQuota leaveQuota1 = new LeaveQuota("Administrative" ,"2024", "Manager");
 			leaveQuota1.setAnnualLeaveQuota(14);
@@ -61,11 +66,17 @@ public class Application {
 			leaveQuota2.setMedicalLeaveQuota(60);
 			leaveQuotaRepository.save(leaveQuota2);
 			
+			LeaveQuota leaveQuota3 = new LeaveQuota("Ceo", "2024", "Ceo");
+			leaveQuota2.setAnnualLeaveQuota(365);
+			leaveQuota2.setMedicalLeaveQuota(365);
+			leaveQuotaRepository.save(leaveQuota3);
+			
 			manager1.setLeaveQuota(leaveQuota1);
 			manager2.setLeaveQuota(leaveQuota1);
 			employee1.setLeaveQuota(leaveQuota2);
 			employee2.setLeaveQuota(leaveQuota2);
 			employee3.setLeaveQuota(leaveQuota2);
+			ceo.setLeaveQuota(leaveQuota3);
 			
 			managerRepository.save(manager1);
 			managerRepository.save(manager2);
@@ -73,6 +84,8 @@ public class Application {
 			employeeRepository.save(employee1);
 			employeeRepository.save(employee2);
 			employeeRepository.save(employee3);
+			
+			ceoRepository.save(ceo);
 			
 			DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 			LocalDate date1 = LocalDate.parse("01/05/2024", df);
