@@ -12,15 +12,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class CompensationClaim {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@NotNull (message = "Date must not be blank")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate date;
+	@NotNull (message = "Time must not be blank")
 	private LocalTime startTime;
+	@NotNull (message = "Time must not be blank")
 	private LocalTime endTime;
 	private double hours;
 	private String remarks;

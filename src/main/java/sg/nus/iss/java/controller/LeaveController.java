@@ -80,6 +80,8 @@ public class LeaveController {
 			model.addAttribute("endDate", endDate.toString());
 			List<PublicHoliday> publicHolidays = publicHolidayService.findAllPublicHolidays();
 			model.addAttribute("publicHolidays", publicHolidays);
+			String Role = (String) sessionObj.getAttribute("role");
+			model.addAttribute("role", Role);
 			return "createLeave";
 		}
 		

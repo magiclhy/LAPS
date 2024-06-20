@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import sg.nus.iss.java.model.Admin;
 import sg.nus.iss.java.model.Ceo;
@@ -71,12 +72,19 @@ public class UserController {
 	                     @RequestParam("type") String type, @RequestParam("manager") Optional<Integer> managerId, 
 	                     @RequestParam("employees") Optional<List<Integer>> employeeIds, 
 	                     @RequestParam("leaveQuotaManager") Optional<LeaveQuota> leaveQuotaManager,
-	                     @RequestParam("leaveQuotaEmp") Optional<LeaveQuota> leaveQuotaEmp, Model model) {
+	                     @RequestParam("leaveQuotaEmp") Optional<LeaveQuota> leaveQuotaEmp, HttpSession sessionObj, Model model) {
 	    if (bindingResult.hasErrors()) {
 	        List<Manager> managers = managerService.findAllManagers();
 	        model.addAttribute("managers", managers);
 	        List<Employee> employees = userService.findAllUsersByType("Employee");
 	        model.addAttribute("employees", employees);
+	        LocalDate currentDate = LocalDate.now();
+	        int currentYear = currentDate.getYear();
+	        String currentYearString = Integer.toString(currentYear);
+	        List<LeaveQuota> leaveQuotasManager = leaveQuotaService.findLeaveQuota(currentYearString, "Manager");
+			model.addAttribute("leaveQuotasManager", leaveQuotasManager);
+			List<LeaveQuota> leaveQuotasEmp = leaveQuotaService.findLeaveQuota(currentYearString, "Employee");
+			model.addAttribute("leaveQuotasEmp", leaveQuotasEmp);
 	        return "createUser";
 	    } else {
 
@@ -93,9 +101,9 @@ public class UserController {
 	            employeeService.saveEmployee(employee);
 	        } else if (type.equals("Manager")) {
 	            Manager manager = convertUserToManager(user, new Manager());
-
+	            
 	            leaveQuotaManager.ifPresent(manager::setLeaveQuota);
-
+	            
 	            if (employeeIds.isPresent()) {
 	                List<Integer> employeeIdsList = employeeIds.get();
 	                for (int empId : employeeIdsList) {
@@ -106,8 +114,10 @@ public class UserController {
 	                    });
 	                }
 	            }
-
+	            Ceo ceo = ceoService.findCeoById(6).get();
+	            manager.setCeo(ceo);
 	            managerService.saveManager(manager);
+	            
 	        } else if (type.equals("Admin")) {
 	            Admin admin = convertUserToAdmin(user, new Admin());
 	            adminService.saveAdmin(admin);
@@ -155,6 +165,7 @@ public class UserController {
 			User user = optUser.get();
 			if (user.getType().equals("Employee")) {
 				Employee employee = employeeService.findEmployeeById(id).get();
+				model.addAttribute("userType", user.getType());
 				model.addAttribute("user", employee);
 				model.addAttribute("manager", employee.getManager());
 				managers.remove(employee);
@@ -162,6 +173,7 @@ public class UserController {
 			}
 			else if (user.getType().equals("Manager")) {
 				Manager manager = managerService.findManagerById(id).get();
+				model.addAttribute("userType", user.getType());
 				model.addAttribute("user", manager);
 				model.addAttribute("employees", manager.getEmployees());
 				managers.remove(manager);
@@ -169,11 +181,13 @@ public class UserController {
 			}
 			else if (user.getType().equals("Ceo")) {
 				Ceo ceo = ceoService.findCeoById(id).get();
+				model.addAttribute("userType", user.getType());
 				model.addAttribute("user", ceo);
 				model.addAttribute("managers", ceo.getManagers());
 			}
 			else if (user.getType().equals("Admin")) {
 				Admin admin = adminService.findAdminById(id).get();
+				model.addAttribute("userType", user.getType());
 				model.addAttribute("user", admin);
 			}
 		}
@@ -190,6 +204,31 @@ public class UserController {
             @RequestParam("leaveQuotaEmp") Optional<LeaveQuota> leaveQuotaEmp,
             @RequestParam("id") int userId, Model model, @RequestParam("changeRole") String changeRole) {
 		if (bindingResult.hasErrors()) {
+			List<Manager> managers = managerService.findAllManagers();
+	        model.addAttribute("managers", managers);
+	        List<Employee> employees = userService.findAllUsersByType("Employee");
+	        model.addAttribute("employees", employees);
+			LocalDate currentDate = LocalDate.now();
+	        int currentYear = currentDate.getYear();
+	        String currentYearString = Integer.toString(currentYear);
+	        List<LeaveQuota> leaveQuotasManager = leaveQuotaService.findLeaveQuota(currentYearString, "Manager");
+			model.addAttribute("leaveQuotasManager", leaveQuotasManager);
+			List<LeaveQuota> leaveQuotasEmp = leaveQuotaService.findLeaveQuota(currentYearString, "Employee");
+			model.addAttribute("leaveQuotasEmp", leaveQuotasEmp);
+			User user1 = userService.findUserById(userId).get();
+			if (user1.getType().equals("Employee")) {
+				Employee employee = employeeService.findEmployeeById(userId).get();
+				model.addAttribute("user", employee);
+			}
+			else if (user1.getType().equals("Manager")) {
+				Manager manager = managerService.findManagerById(userId).get();
+				model.addAttribute("user", manager);
+				model.addAttribute("employees", manager.getEmployees());
+			}
+			else if (user1.getType().equals("Ceo")) {
+				Ceo ceo = ceoService.findCeoById(userId).get();
+				model.addAttribute("user", ceo);
+			}
 			return "editUser";
 		}
 		else {
@@ -237,6 +276,8 @@ public class UserController {
 						}
 					}
 					//manager.setLeaveQuota(leaveQuota);
+					Ceo ceo = ceoService.findCeoById(6).get();
+		            manager.setCeo(ceo);
 					managerService.saveManager(manager);
 				}
 				else if (changeRole.equals("no")){
@@ -256,6 +297,8 @@ public class UserController {
 						}
 					}
 					//manager.setLeaveQuota(leaveQuota);
+					Ceo ceo = ceoService.findCeoById(6).get();
+		            manager.setCeo(ceo);
 					managerService.saveManager(manager);
 				}
 			}

@@ -38,7 +38,7 @@
 					</div>
 				</div>
 				
-				<div id="leaveQuotaEmp">
+				<div id="leaveQuotaEmp" th:if="${user.type != 'Admin'}">
 					<div class="form-group row">
 						<label for="leaveQuotaEmp" class="col-sm-2 col-form-label">Set Leave Quota:</label>
 						<div class="col-sm-10">
@@ -67,7 +67,7 @@
 					</div>
 				</div>
 				
-				<div id="leaveQuotaManager">
+				<div id="leaveQuotaManager" th:if="${user.type != 'Admin'}">
 					<div class="form-group row">
 						<label for="leaveQuotaManager" class="col-sm-2 col-form-label">Set Leave Quota:</label>
 						<div class="col-sm-10">
@@ -86,7 +86,7 @@
 						<label for="employees" class="col-sm-2 col-form-label">Set Employees:</label>
 						<div class="col-sm-10">
 							<select name="employees" id="employeesField" class="form-control" multiple>
-								<option th:each="employee, iterStat:${allEmployees}" 
+								<option th:each="employee, iterStat:${employees}" 
 										th:value="${employee.id}" 
 										th:text="${employee.name}"
 										th:selected="${employee.manager.id == user.id}"></option>
@@ -102,6 +102,7 @@
 					<label for="username" class="col-sm-2 col-form-label">Username:</label>
 					<div class="col-sm-10">
 						<input type="text" name="username" class="form-control" th:field="*{username}">
+						<div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></div>
 					</div>
 				</div>
 
@@ -109,6 +110,7 @@
 					<label for="password" class="col-sm-2 col-form-label">Password:</label>
 					<div class="col-sm-10">
 						<input type="text" name="password" class="form-control" th:field="*{password}" th:value="${user.password}">
+						<div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
 					</div>
 				</div>
 				<label for="submit" class="col-sm-2 col-form-label"></label>
@@ -119,7 +121,7 @@
 		</div>
 		<table style="width:50%; margin-left: auto; margin-right: auto; border: white;">
 			<tr>
-				<td style="text-align: center; font-weight: bold;"><a href="#" onclick="history.go(-1); return false;">Back</a></td>
+				<td style="text-align: center; font-weight: bold;"><a href="/users/search">Back</a></td>
 			</tr>
 		</table>
 		

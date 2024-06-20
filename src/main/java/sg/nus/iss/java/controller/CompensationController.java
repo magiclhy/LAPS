@@ -38,11 +38,11 @@ public class CompensationController {
 	}
 	
 	@PostMapping("/create")
-	public String confirmCompensationClaim(@Valid @ModelAttribute CompensationClaim claim, BindingResult bindingResult, 
+	public String confirmCompensationClaim(@Valid @ModelAttribute("claim") CompensationClaim claim, BindingResult bindingResult, 
 			Model model, HttpSession sessionbj) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("Error binding :(");
-			return "createLeave";
+			return "createClaim";
 		}
 		Employee employee = (Employee) sessionbj.getAttribute("user");
 		claim.setEmployee(employee);

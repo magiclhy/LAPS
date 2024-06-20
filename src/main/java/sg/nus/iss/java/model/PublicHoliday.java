@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="public_holiday")
@@ -20,6 +21,7 @@ public class PublicHoliday {
 	private int id;
 	@NotBlank(message = "Name must not be blank")
 	private String name;
+	@NotNull(message = "Date must not be blank")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate date;
 	

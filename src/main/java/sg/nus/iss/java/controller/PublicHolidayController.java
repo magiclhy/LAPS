@@ -62,7 +62,7 @@ public class PublicHolidayController {
 	}
 	
 	@PostMapping("/save")
-	public String savePH(@Valid @ModelAttribute PublicHoliday publicHoliday, BindingResult bindingResult,
+	public String savePH(@Valid @ModelAttribute("holiday") PublicHoliday publicHoliday, BindingResult bindingResult,
 			Model model) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("Binding error");
