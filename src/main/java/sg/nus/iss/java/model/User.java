@@ -13,15 +13,15 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "user_type")
-@Table(name="Users")
+@DiscriminatorColumn(name = "type")
+@Table(name="user")
 public class User {
 	@Id
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	private int id;
 	@NotBlank(message = "Name must not be blank")
 	private String name;
-	@Column(name="user_type", insertable = false, updatable = false)
+	@Column(name="type", insertable = false, updatable = false)
 	private String type;
 	@NotBlank(message = "Username must not be blank")
 	private String username;

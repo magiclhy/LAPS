@@ -21,7 +21,7 @@ public class LeaveQuota {
 	private String name;
 	private int annualLeaveQuota;
 	private int medicalLeaveQuota;
-	@Column(name = "leave_year")
+	@Column(name = "user_year")
 	@Size (min = 4, max = 4, message = "Year should be 4 characters long.")
 	private String year;
 	private String role;

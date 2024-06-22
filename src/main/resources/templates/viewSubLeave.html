@@ -41,11 +41,11 @@
 		<br />
 		<div>
 		    <span>
-		        <a name="previous" id="previous" th:href="@{'/leaves/view?pageNo=' + ${currentPage - 1} + '&pageSize=' + ${pageSize}}">Previous</a>
+		        <a name="previous" id="previous" th:href="@{'/leaves/viewSubLeaves?pageNo=' + ${currentPage - 1} + '&pageSize=' + ${pageSize}}">Previous</a>
 		    </span>&emsp;
 		    <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>&emsp;
 		    <span th:if="${currentPage < totalPages - 1}">
-		        <a name="next" id="next" th:href="@{'/leaves/view?pageNo=' + ${currentPage + 1} + '&pageSize=' + ${pageSize}}">Next</a>
+		        <a name="next" id="next" th:href="@{'/leaves/viewSubLeaves?pageNo=' + ${currentPage + 1} + '&pageSize=' + ${pageSize}}">Next</a>
 		    </span>
 			<span th:if="${currentPage >= totalPages - 1}" style="color: grey;">
 		        Next

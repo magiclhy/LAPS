@@ -1,25 +1,10 @@
 package sg.nus.iss.java;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import sg.nus.iss.java.model.Admin;
-import sg.nus.iss.java.model.Ceo;
-import sg.nus.iss.java.model.CompensationClaim;
-import sg.nus.iss.java.model.CompensationLedger;
-import sg.nus.iss.java.model.Employee;
-import sg.nus.iss.java.model.Leave;
-import sg.nus.iss.java.model.LeaveQuota;
-import sg.nus.iss.java.model.LeaveType;
-import sg.nus.iss.java.model.Manager;
-import sg.nus.iss.java.model.PublicHoliday;
-import sg.nus.iss.java.model.Status;
 import sg.nus.iss.java.repository.AdminRepository;
 import sg.nus.iss.java.repository.CeoRepository;
 import sg.nus.iss.java.repository.CompensationClaimRepository;
@@ -36,7 +21,20 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-	
+
+    @Bean
+    CommandLineRunner commandLineRun(EmployeeRepository employeeRepository, LeaveRepository leaveRepository,
+                                  AdminRepository adminRepository, ManagerRepository managerRepository, CeoRepository ceoRepository, PublicHolidayRepository publicHolidayRepository,
+                                  LeaveQuotaRepository leaveQuotaRepository, CompensationLedgerRepository compensationLedgerRepository,
+                                  CompensationClaimRepository compensationClaimRepository) {
+		return args -> {
+			System.out.println("test");
+			
+		};
+		}
+		
+	/**
+	 * 
 	@Bean
 	public CommandLineRunner commandLineRun(EmployeeRepository employeeRepository, LeaveRepository leaveRepository, 
 			AdminRepository adminRepository, ManagerRepository managerRepository, CeoRepository ceoRepository, PublicHolidayRepository publicHolidayRepository, 
@@ -179,5 +177,6 @@ public class Application {
 			compensationClaimRepository.save(claim4);
 		};
 	}
+	*/
 
 }

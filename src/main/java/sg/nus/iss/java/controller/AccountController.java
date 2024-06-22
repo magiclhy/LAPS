@@ -31,6 +31,7 @@ public class AccountController {
 	public String validateLogin(@RequestParam("username") String username, @RequestParam("password") String password, Model model, HttpSession sessionObj) {
 		Optional<User> optUser = userService.findUserByUsername(username);
 		if (optUser.isPresent()) {
+			System.out.println(username);
 			User user = optUser.get();
 			if (user.getPassword().equals(password)) {
 				//After authenticated, save user into session for future use

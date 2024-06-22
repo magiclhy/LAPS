@@ -5,6 +5,7 @@ import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,9 +13,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@Table(name="compensation_claim")
 public class CompensationClaim {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +25,11 @@ public class CompensationClaim {
 	@NotNull (message = "Date must not be blank")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate date;
+	@Column(name="start_time")
 	@NotNull (message = "Time must not be blank")
 	private LocalTime startTime;
 	@NotNull (message = "Time must not be blank")
+	@Column(name="end_time")
 	private LocalTime endTime;
 	private double hours;
 	private String remarks;

@@ -2,6 +2,7 @@ package sg.nus.iss.java.model;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,7 +14,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name="leave")
+@Table(name="leaveentity")
 public class Leave {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +27,7 @@ public class Leave {
 	private Status status;
 	@Enumerated(EnumType.STRING)
 	private LeaveType type;
+	@Column(name="work_dissemination")
 	private String workDissemination;
 	private String contact;
 	private double duration;
