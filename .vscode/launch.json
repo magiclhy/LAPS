@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Application<java-ca>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "sg.nus.iss.java.Application",
+            "projectName": "java-ca",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

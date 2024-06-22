@@ -1,12 +1,16 @@
 package sg.nus.iss.java.controller;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
@@ -43,6 +47,27 @@ public class AccountController {
 		model.addAttribute("message", "Incorrect username or password, please try again.");
 		return "login";
 	}
+
+	@PostMapping(value = "/", consumes = "application/json")
+	public ResponseEntity<String> validateLogin(@RequestBody Map<String, String> payload, HttpSession sessionObj) {
+		String username = payload.get("username");
+		String password = payload.get("password");
+
+		Optional<User> optUser = userService.findUserByUsername(username);
+		if (optUser.isPresent()) {
+			User user = optUser.get();
+			if (user.getPassword().equals(password)) {
+				sessionObj.setAttribute("user", user);
+				sessionObj.setAttribute("role", user.getType());
+				sessionObj.setAttribute("name", user.getName());
+				return ResponseEntity.ok("Login successful");
+			}
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password, please try again.");
+	}
+
+	
+	
 	
 	@GetMapping("/logout")
 	public String logout(HttpSession sessionObj) {

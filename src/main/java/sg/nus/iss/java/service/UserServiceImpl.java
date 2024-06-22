@@ -14,38 +14,49 @@ import sg.nus.iss.java.repository.UserRepository;
 @Service
 @Transactional(readOnly=true)
 public class UserServiceImpl implements UserService {
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Override
-	@Transactional(readOnly=false)
-	public User saveUser(User user) {
-		return userRepository.save(user);
-	}
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Override
+    @Transactional(readOnly=false)
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
 
-	@Override
-	public List<User> findUserByName(String k) {
-		return userRepository.findUserByName(k);
-	}
+    @Override
+    public List<User> findUserByName(String k) {
+        return userRepository.findUserByName(k);
+    }
 
-	@Override
-	public Optional<User> findUserById(int id) {
-		return userRepository.findById(id);
-	}
+    @Override
+    public Optional<User> findUserById(int id) {
+        return userRepository.findById(id);
+    }
 
-	@Override
-	public Optional<User> findUserByUsername(String username) {
-		return userRepository.findUserByUsername(username);
-	}
+    @Override
+    public Optional<User> findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username);
+    }
 
-	@Override
-	public List<Employee> findAllUsersByType(String type) {
-		return userRepository.findAllUsersByType(type);
-	}
+    @Override
+    public List<Employee> findAllUsersByType(String type) {
+        return userRepository.findAllUsersByType(type);
+    }
 
-	@Override
-	@Transactional(readOnly=false)
-	public void deleteUserById(int id) {
-		userRepository.deleteById(id);
-	}
+    @Override
+    @Transactional(readOnly=false)
+    public void deleteUserById(int id) {
+        userRepository.deleteById(id);
+    }
+
+    
+    @Override
+    public boolean validateUser(String username, String password) {
+        Optional<User> userOpt = userRepository.findUserByUsername(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return user.getPassword().equals(password);
+        }
+        return false;
+    }
 }
