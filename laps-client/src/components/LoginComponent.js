@@ -21,7 +21,7 @@ const LoginComponent = () => {
   };
 
   return (
-    <div>
+    <div style={{ fontSize: '40px' }}>
       <h2>Login</h2>
       <div>
         <label>Username:</label>
@@ -29,6 +29,7 @@ const LoginComponent = () => {
           type="text" 
           value={username} 
           onChange={(e) => setUsername(e.target.value)} 
+          style={{ fontSize: '18px', padding: '5px' }}
         />
       </div>
       <div>
@@ -37,9 +38,10 @@ const LoginComponent = () => {
           type="password" 
           value={password} 
           onChange={(e) => setPassword(e.target.value)} 
+          style={{ fontSize: '18px', padding: '5px' }}
         />
       </div>
-      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleLogin} style={{ fontSize: '18px', padding: '10px 20px' }}>Login</button>
     </div>
   );
 };
