@@ -110,7 +110,7 @@ public class Employee extends User{
 				break;
 		}
 		System.out.println("quota: " + quota);
-		int leaveUsed = 0;
+		double leaveUsed = 0;
 		for (Leave leave : leaves) {
 			if (leave.getType() == type && (leave.getStatus() == Status.Applied || leave.getStatus() == Status.Approved || leave.getStatus() == Status.Updated)) {
 				leaveUsed += leave.getDuration();

@@ -71,11 +71,9 @@ public class LeaveController {
 			Model model, @RequestParam("type") LeaveType type, HttpSession sessionObj) {
 		if (bindingResult.hasErrors()) {
 			System.out.println("Error binding :(");
-			if (leave.getStartDate() == null) {
-				leave.setDuration(1);
-			}
-	        LocalDate startDate = (leave.getStartDate() != null) ? leave.getStartDate() : LocalDate.now();
-	        LocalDate endDate = (leave.getEndDate() != null) ? leave.getEndDate() : LocalDate.now();
+			leave.setDuration(1);
+	        LocalDate startDate = LocalDate.now();
+	        LocalDate endDate = LocalDate.now();
 			model.addAttribute("startDate", startDate.toString());
 			model.addAttribute("endDate", endDate.toString());
 			List<PublicHoliday> publicHolidays = publicHolidayService.findAllPublicHolidays();
