@@ -72,8 +72,8 @@ public class LeaveController {
 		if (bindingResult.hasErrors()) {
 			System.out.println("Error binding :(");
 			leave.setDuration(1);
-	        LocalDate startDate = LocalDate.now();
-	        LocalDate endDate = LocalDate.now();
+	        LocalDate startDate = (leave.getStartDate() != null) ? leave.getStartDate() : LocalDate.now();
+	        LocalDate endDate = (leave.getEndDate() != null) ? leave.getEndDate() : LocalDate.now();
 			model.addAttribute("startDate", startDate.toString());
 			model.addAttribute("endDate", endDate.toString());
 			List<PublicHoliday> publicHolidays = publicHolidayService.findAllPublicHolidays();
