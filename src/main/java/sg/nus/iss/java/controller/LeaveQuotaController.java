@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import sg.nus.iss.java.model.LeaveQuota;
 import sg.nus.iss.java.service.LeaveQuotaService;
+import sg.nus.iss.java.model.cyValidator;
 
 @Controller
 @RequestMapping("leaveQuota")
@@ -24,6 +27,13 @@ public class LeaveQuotaController {
 	@Autowired
 	private LeaveQuotaService leaveQuotaService;
 	
+	@Autowired
+    private cyValidator cyValidator;
+	
+	@InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(cyValidator);
+    }
 	//CREATE LEAVE QUOTA
 	@GetMapping("/create")
 	public String createLeaveQuota (Model model) {

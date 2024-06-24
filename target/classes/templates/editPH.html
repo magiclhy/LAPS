@@ -19,6 +19,7 @@
 					<div class="col-sm-10">
 						<input type="text" id="date" name="date" placeholder="Select date" class="form-control" th:field="*{date}" autocomplete="off"/>
 						<input type="text" name="id" th:field="*{id}" hidden/>
+						<span th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="text-danger">
 					</div>
 				</div>
 				

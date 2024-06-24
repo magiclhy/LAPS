@@ -17,7 +17,7 @@
 				<div class="form-group row">
 					<label for="date" class="col-sm-2 col-form-label">Select Date:</label>
 					<div class="col-sm-10">
-						<input type="text" id="date" name="date" placeholder="Select date" class="form-control" th:field="*{date}" autocomplete="off"/>
+						<input type="text" id="date" name="date" placeholder="Select date" class="form-control" th:field="*{date}" autocomplete="off" required/>
 						<span th:if="${#fields.hasErrors('date')}" th:errors="*{date}" class="text-danger">
 					</div>
 				</div>
