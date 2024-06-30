@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		
+		<title>
+			View leave
+		</title>
+	</head>
+	<body style="text-align: center;">
+		<div class="container mt-5">
+			<h2>Leave Records For Current Year</h2>
+	    	<br />
+	    	<p style="text-align: center;" th:if="${#lists.isEmpty(leaves)}">No Leave Records</p>
+			<table style="margin-left:auto; margin-right: auto; width:100%" class="table-hover" th:if="${not #lists.isEmpty(leaves)}">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>Start Date:</th>
+						<th>End Date:</th>
+						<th>Duration:</th>
+						<th>Leave Type:</th>
+						<th>Status:</th>
+						<td></td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="leave, iterStat:${leaves}" style="text-align: center;">
+						<td th:text="${iterStat.count}"></td>
+						<td th:text="${#temporals.format(leave.startDate, 'dd-MM-yyyy')}"></td>
+						<td th:text="${#temporals.format(leave.endDate, 'dd-MM-yyyy')}"></td>
+						<td th:text="${leave.duration + ' days'}"></td>
+						<td th:text="${leave.type}"></td>
+						<td th:text="${leave.status}"></td>
+						<td>
+							<a th:href="@{/leaves/edit/}+${leave.id}" th:if="${leave.status eq T(sg.nus.iss.java.model.Status).Applied or leave.status eq T(sg.nus.iss.java.model.Status).Updated}">Edit/Delete</a>
+							<a th:href="@{/leaves/cancel/}+${leave.id}" th:if="${leave.status eq T(sg.nus.iss.java.model.Status).Approved and leave.startDate.isAfter(today)}">Cancel</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br />
+		
+		<div>
+		    <span>
+		        <a name="previous" id="previous" th:href="@{'/leaves/view?pageNo=' + ${currentPage - 1} + '&pageSize=' + ${pageSize}}">Previous</a>
+		    </span>&emsp;
+		    <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>&emsp;
+		    <span th:if="${currentPage < totalPages - 1}">
+		        <a name="next" id="next" th:href="@{'/leaves/view?pageNo=' + ${currentPage + 1} + '&pageSize=' + ${pageSize}}">Next</a>
+		    </span>
+			<span th:if="${currentPage >= totalPages - 1}" style="color: grey;">
+		        Next
+		    </span>
+		</div>
+		<div style="margin-left: auto; margin-right: auto;">
+			<label for="pageSize" class="col-form-label">Results per page:</label>
+			<div>
+				<select name="pageSize" id="pageSize" >
+					<option th:each="size : ${#numbers.sequence(10, 30, 10)}"
+					th:value="${size}"
+					th:text="${size}"
+					th:selected="${size == pageSize}"></option>
+				</select>
+			</div>
+		</div>
+
+		<br />
+		<div>
+			<table style="width:50%; margin-left: auto; margin-right: auto; border: white;">
+				<tr>
+					<td style="text-align: center; font-weight: bold;"><a href="/home" >Back To Home</a></td>
+				</tr>
+			</table>
+		</div>
+	</body>
+	<script th:inline="javascript">
+		const previousElement = document.getElementById("previous");
+		const nextElement = document.getElementById("next");
+		const pageSizeDropDown = document.getElementById("pageSize");
+		const currentPage = /*[[${currentPage}]]*/ 0;
+		const totalPages = /*[[${totalPages}]]*/ 0;
+		console.log("currentPage: " + currentPage);
+		console.log("totalPages: " + totalPages);
+		if (currentPage === 0){
+			previousElement.removeAttribute("href");
+			previousElement.style.color = "gray";
+		}
+		else if (currentPage === (totalPages - 1)){
+			nextElement.removeAttribute("href");
+			nextElement.style.color = "gray";
+		}
+		pageSizeDropDown.addEventListener("change", function(){
+			window.location.href = "/leaves/view?pageSize=" + pageSize.value + "&pageNo=" + currentPage;
+		})
+		
+	</script>
+</html>
